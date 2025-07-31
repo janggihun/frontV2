@@ -1,6 +1,6 @@
 
   export const headerList = [
-    { url: "/bom", label: "제원관리", clickUrl: "/bom/manager" },
+    { url: "/bom", label: "품목관리", clickUrl: "/bom/manager" },
     { url: "/obtn", label: "영업관리", clickUrl: "/obtn/manager" },
     { url: "/work", label: "작업지시", clickUrl: "/work/manager" },
     { url: "/purchase", label: "구매자재", clickUrl: "/purchase/manager" },

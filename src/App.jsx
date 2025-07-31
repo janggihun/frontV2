@@ -1,44 +1,22 @@
-import { Await, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import { Login } from './pages/Login'
 import { DashBoardManager } from './pages/DashBoard/DashBoardManager'
 import { BomManager } from './pages/Bom/BomManager'
 import { ObtnManager } from './pages/Obtn/ObtnManager'
-
 import { AdminManager } from './pages/Admin/AdminManager'
 import { PurchaseManager } from './pages/Purchase/PurchaseManager'
 import { WorkManager } from './pages/Work/WorkManager'
-import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { initUserData } from './store/UserSlice.Jsx'
-import { getAxios, getMeAxios } from './api/restApi'
-import { Status } from './enum/enum'
+import {BomRegister} from "./pages/Bom/BomRegister.jsx";
+import { UserAuth } from './component/UserAuth.jsx'
+import { TaxManager } from './pages/Tax/TaxManager.jsx'
 
 
 function App() {
-  const dispatch = useDispatch();
-  //다른거 쓸예정
-
-  const getId = async () => {
-    const pathname = window.location.pathname
-    //유저를 확인하여 값이 없으면 "/" 로 보내기
-    const res = await getMeAxios();
-    if (res.status === Status.SUCCESS) {
-
-      dispatch(initUserData(res.data))
-      return;
-    }
-    if (pathname !== "/") {
-      window.location.href = "/";
-    }
-  };
-
-  getId();
-
-
-
-
+ 
   return (
     <>
+      <UserAuth/>
+   
       <Routes>
         {/* 로그인화면 */}
         <Route path="/" element={<Login />} />
@@ -49,6 +27,7 @@ function App() {
 
         {/* 제원관리 */}
         <Route path="/bom/manager" element={<BomManager />} />
+        <Route path="/bom/register" element={<BomRegister />} />
         {/* <Route path="/bom/register" element={<Bom />} /> */}
 
         {/* 수주 */}
@@ -59,7 +38,8 @@ function App() {
 
         {/* 구매자재 */}
         <Route path="/purchase/manager" element={<PurchaseManager />} />
-
+        {/*세금*/}
+        <Route path="/tax/manager" element={<TaxManager />} />
         {/* 관리자 */}
         <Route path="/admin/manager" element={<AdminManager />} />
 

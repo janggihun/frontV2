@@ -24,7 +24,7 @@ export const Login = () => {
     const res = await postAxios(url, userMap, {
       withCredentials: true // 세션 쿠키 전달 필수
     });
-    alert(res.data); // 로그인 성공
+    // alert(res.data); // 로그인 성공
     // console.log(res);
     if (res.status === Status.SUCCESS) {
 
