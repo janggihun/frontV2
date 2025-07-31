@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import { Login } from './pages/Login'
 import { DashBoardManager } from './pages/DashBoard/DashBoardManager'
 import { BomManager } from './pages/Bom/BomManager'
@@ -7,9 +7,53 @@ import { ObtnManager } from './pages/Obtn/ObtnManager'
 import { AdminManager } from './pages/Admin/AdminManager'
 import { PurchaseManager } from './pages/Purchase/PurchaseManager'
 import { WorkManager } from './pages/Work/WorkManager'
+import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { initUserData } from './store/UserSlice.Jsx'
 
 
 function App() {
+  const dispatch = useDispatch();
+  //다른거 쓸예정
+
+  // const User = useSelector((state) => {
+  //   return state.User.value;
+  // });
+
+
+  useEffect(() => {
+    const getId = async () => {
+
+      //userId , 권한 확인
+      const url = "/api/v1/user/Authorization";
+      const pathname = window.location.pathname
+      try {
+        const res = await getAxios(url);
+
+        if (res.status === Status.SUCCESS && res.data) {
+
+          dispatch(initUserData(res.data))
+          return;
+        }
+
+        if (!(pathname === "/")) {
+          window.location.href = "/";
+        }
+
+      } catch (error) {
+        if (!(pathname === "/")) {
+          window.location.href = "/";
+        }
+      }
+    };
+
+    getId();
+
+
+  }, []);
+
+
+
 
   return (
     <>

@@ -6,7 +6,6 @@ import { headerList, moveUrl } from "../../Common";
 
 export const Header = () => {
   const navigate = useNavigate();
-  const [userId, setUserId] = useState();
 
   //로그아웃
   const logout = async () => {
@@ -18,27 +17,6 @@ export const Header = () => {
       navigate("/");
     }
   };
-
-  useEffect(() => {
-    const getId = async () => {
-
-      //userId , 권한 확인
-      const url = "/api/v1/user/Authorization";
-
-      try {
-        const res = await getAxios(url);
-
-        if (res.status === Status.SUCCESS && res.data) {
-          setUserId(res.data);
-          return;
-        }
-        navigate("/");
-      } catch (error) {
-        navigate("/");
-      }
-    };
-    getId();
-  }, []);
 
   const currentPath = window.location.pathname;
 

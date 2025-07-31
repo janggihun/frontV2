@@ -1,10 +1,10 @@
 // api/axiosConfig.js
 import axios from "axios";
 
-const instance = axios.create({ baseURL: 'http://localhost' },);
+// const instance = axios.create({ baseURL: 'http://localhost' },);
 
-//test
-// const instance = axios.create({ baseURL: 'http://localhost:8080' },);
+//고정
+const instance = axios.create({ baseURL: 'http://localhost:8080' },);
 
 instance.interceptors.request.use(
   (config) => {
