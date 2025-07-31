@@ -9,11 +9,41 @@ const base = ""
 export const getAxios = async (url, map) => {
 
   try {
-    const res = await axios.get(base + url, map);
+    const res = await axios.get(base + url, map, {
+      withCredentials: true
+    });
     return res.data;
   } catch (error) {
     // console.log(error)
-    alert(error.response.data.data )
+    alert(error.response.data.data)
+  }
+}
+
+export const getMeAxios = async () => {
+
+  const url = "/api/v1/user/me";
+  try {
+    const res = await axios.get(base + url, {
+      withCredentials: true
+    });
+    return res.data;
+  } catch (error) {
+    // console.log(error)
+    alert(error.response.data.data)
+  }
+}
+
+export const getLogoutAxios = async () => {
+
+  const url = "/api/v1/user/logout";
+  try {
+    const res = await axios.get(base + url, {
+      withCredentials: true
+    });
+    return res.data;
+  } catch (error) {
+    // console.log(error)
+    alert(error.response.data.data)
   }
 }
 /*
@@ -22,7 +52,9 @@ export const getAxios = async (url, map) => {
 */
 export const postAxios = async (url, map) => {
   try {
-    const res = await axios.post(base + url, map);
+    const res = await axios.post(base + url, map, {
+      withCredentials: true
+    });
     return res.data
   } catch (error) {
     alert(error.response.data.data)
@@ -37,7 +69,9 @@ export const postAxios = async (url, map) => {
 export const patchAxios = async (url, map) => {
 
   try {
-    const res = await axios.patch(base + url, map);
+    const res = await axios.patch(base + url, map, {
+      withCredentials: true
+    });
     return res.data
   } catch (error) {
     alert(error.response.data.data)
@@ -52,7 +86,9 @@ export const patchAxios = async (url, map) => {
 export const deleteAxios = async (url, map) => {
 
   try {
-    const res = await axios.delete(base + url, map);
+    const res = await axios.delete(base + url, map, {
+      withCredentials: true
+    });
     return res.data
   } catch (error) {
     alert(error.response.data.data)

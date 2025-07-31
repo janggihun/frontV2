@@ -1,10 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { useReducer } from "./store/UserSlice.Jsx";
+import userReducer from "./store/UserSlice.Jsx";
+
 
 
 export default configureStore({
     reducer: {
-        User: useReducer,
+        User: userReducer,
 
     },
     middleware: (getDefaultMiddleware) =>

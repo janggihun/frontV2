@@ -1,11 +1,17 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { postAxios } from "../api/restApi";
 import { Status } from "../enum/enum";
 import { useNavigate } from "react-router-dom";
-import { moveUrl } from "../Common";
+import { useDispatch, useSelector } from "react-redux";
+import { initUserData } from "../store/UserSlice.Jsx";
 
 export const Login = () => {
+  const dispatch = useDispatch()
   const navigate = useNavigate()
+  const User = useSelector((state) => {
+    return state.User.value;
+  });
+
   const [userId, setUserId] = useState();
   const [userPw, setUserPw] = useState();
 
@@ -15,16 +21,26 @@ export const Login = () => {
   const click_loginBtn = async () => {
     const userMap = { userId, userPw };
     const url = "/api/v1/user/login";
-    const res = await postAxios(url, userMap);
+    const res = await postAxios(url, userMap, {
+      withCredentials: true // 세션 쿠키 전달 필수
+    });
+    alert(res.data); // 로그인 성공
     // console.log(res);
     if (res.status === Status.SUCCESS) {
 
-       localStorage.setItem("jwt", res.data); // 또는 sessionStorage.setItem
+      dispatch(initUserData(userId))
 
       navigate("/dashBoard/manager");
     }
   };
 
+  useEffect(() => {
+
+    if (User) {
+      navigate("/dashBoard/manager");
+    }
+
+  }, [User])
   return (
     <div className="min-h-screen w-full bg-[#f2f2f2] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm bg-white rounded-xl shadow-lg p-8 space-y-6">

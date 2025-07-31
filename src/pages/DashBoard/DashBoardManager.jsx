@@ -4,7 +4,6 @@ import { Sidebar_dashBoard } from "../../component/inc/Sidebar"
 export const DashBoardManager = () => {
 
 
-
     return (
         <div className="h-screen flex flex-col">
 

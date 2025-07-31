@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
+import { Await, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import { Login } from './pages/Login'
 import { DashBoardManager } from './pages/DashBoard/DashBoardManager'
 import { BomManager } from './pages/Bom/BomManager'
@@ -10,47 +10,29 @@ import { WorkManager } from './pages/Work/WorkManager'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { initUserData } from './store/UserSlice.Jsx'
+import { getAxios, getMeAxios } from './api/restApi'
+import { Status } from './enum/enum'
 
 
 function App() {
   const dispatch = useDispatch();
   //다른거 쓸예정
 
-  // const User = useSelector((state) => {
-  //   return state.User.value;
-  // });
+  const getId = async () => {
+    const pathname = window.location.pathname
+    //유저를 확인하여 값이 없으면 "/" 로 보내기
+    const res = await getMeAxios();
+    if (res.status === Status.SUCCESS) {
 
+      dispatch(initUserData(res.data))
+      return;
+    }
+    if (pathname !== "/") {
+      window.location.href = "/";
+    }
+  };
 
-  useEffect(() => {
-    const getId = async () => {
-
-      //userId , 권한 확인
-      const url = "/api/v1/user/Authorization";
-      const pathname = window.location.pathname
-      try {
-        const res = await getAxios(url);
-
-        if (res.status === Status.SUCCESS && res.data) {
-
-          dispatch(initUserData(res.data))
-          return;
-        }
-
-        if (!(pathname === "/")) {
-          window.location.href = "/";
-        }
-
-      } catch (error) {
-        if (!(pathname === "/")) {
-          window.location.href = "/";
-        }
-      }
-    };
-
-    getId();
-
-
-  }, []);
+  getId();
 
 
 

@@ -1,20 +1,24 @@
-import { useEffect, useState } from "react";
+
 import { Status } from "../../enum/enum";
-import { getAxios } from "../../api/restApi";
+import { getLogoutAxios } from "../../api/restApi";
+import { headerList } from "../../Common";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { headerList, moveUrl } from "../../Common";
 
 export const Header = () => {
-  const navigate = useNavigate();
+  const navivate = useNavigate()
+  const User = useSelector((state) => {
+    return state.User.value;
+  });
 
   //로그아웃
   const logout = async () => {
-    const url = "/api/v1/user/logout";
-    const res = await getAxios(url);
+
+    const res = await getLogoutAxios();
 
     if (res.status === Status.SUCCESS) {
-      localStorage.removeItem("jwt");
-      navigate("/");
+
+      window.location.reload();
     }
   };
 
@@ -29,7 +33,7 @@ export const Header = () => {
           return (
             <button
               key={index}
-              onClick={() => window.location.href = (el.clickUrl)}
+              onClick={() => navivate(el.clickUrl)}
               className={`px-2 py-1 rounded transition-colors ${isActive ? "text-green-400 font-bold" : "text-white"
                 } hover:text-green-300`}
             >
@@ -41,9 +45,9 @@ export const Header = () => {
 
       {/* 오른쪽 유저 영역 */}
       <div className="flex items-center gap-4 ml-auto">
-        <span className="text-sm text-[white]">👤 {userId}</span>
+        <span className="text-sm text-[white]">👤 {User}</span>
         <button
-          onClick={logout}
+          onClick={() => { logout(); }}
           className="text-sm bg-red-500 px-3 py-1 rounded hover:bg-red-600"
         >
           로그아웃
