@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react"
-import { postAxios } from "../api/restApi";
-import { Status } from "../enum/enum";
+import { postAxios } from "../../api/restApi";
+import { Status } from "../../enum/enum";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { initUserData } from "../store/UserSlice.Jsx";
+import { initUserData } from "../../store/UserSlice.Jsx";
+
 
 export const Login = () => {
   const dispatch = useDispatch()

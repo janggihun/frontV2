@@ -1,7 +1,7 @@
 
 import { Status } from "../../enum/enum";
 import { getLogoutAxios } from "../../api/restApi";
-import { headerList } from "../../Common";
+import { headerList } from "../Common.jsx";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -25,11 +25,12 @@ export const Header = () => {
   const currentPath = window.location.pathname;
 
   return (
-    <header className="w-full h-16 bg-gray-800 text-white flex items-center px-6 shadow justify-between relative z-30">
+    <header className="w-full h-[50px] bg-gray-800 text-white flex items-center px-6 shadow justify-between relative z-30">
       {/* 가운데 정렬용 nav */}
       <nav className="absolute left-1/2 transform -translate-x-1/2 flex gap-8">
         {headerList.map((el, index) => {
           const isActive = currentPath.startsWith(el.url);
+
           return (
             <button
               key={index}
