@@ -1,0 +1,27 @@
+프론트 시작시 필요
+
+npm create vite@latest
+
+
+npm install >> 노드js
+
+
+3000포트에서 열기위해 vite.config.js에서 port 3000추가
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  server:{
+    port:3000
+  }
+})
+
+npm install -D tailwindcss@3
+npx tailwindcss init
+
+npx tailwindcss init -p
+테일윈드
+
+
+벡엔드 시작시 필요
+
