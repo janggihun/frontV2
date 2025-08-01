@@ -12,7 +12,7 @@ export const ObtnManager = () => {
 
         <>
             <MainTitle title={"* 수주관리"} />
-            <div className="flex h-[350px]">
+            <div className="flex h-[350px] w-full">
                 <MyCalendar />
                 <div className="w-[2%]"></div>
                 <ObtnList />

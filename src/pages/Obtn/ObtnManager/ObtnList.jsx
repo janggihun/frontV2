@@ -102,7 +102,7 @@ export const ObtnList = () => {
     };
 
     return (
-        <div>
+        <div className="w-full">
             {/* 검색 조건 영역 */}
             <div style={{
                 marginBottom: 10,
@@ -113,6 +113,7 @@ export const ObtnList = () => {
                 alignItems: 'center',
                 fontSize: 14,
                 overflowX: 'auto',
+                width: '100%'
             }}>
                 {/* 왼쪽 검정 동그라미 + 텍스트 + 총건수 */}
                 <div style={{
@@ -237,7 +238,7 @@ export const ObtnList = () => {
 
 
             {/* 데이터 테이블 */}
-            <div className="ag-theme-balham" style={{ height: 300, width: 1050 }}>
+            <div className="ag-theme-balham" style={{ height: 300, width: '100%' }}>
                 <AgGridReact
                     ref={gridRef}
                     rowClass="custom-row-style"
