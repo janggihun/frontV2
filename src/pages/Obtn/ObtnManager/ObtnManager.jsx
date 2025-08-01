@@ -3,6 +3,7 @@ import { Sidebar_obtn } from "../../../component/inc/Sidebar"
 import { ObtnManagerHead } from "./ObtnManagerHead.jsx";
 import { MainTitle } from "../../../component/MainTitle.jsx";
 import { ObtnList } from "./ObtnList.jsx";
+import { MyCalendar } from "../../../component/MyCalendar.jsx";
 
 export const ObtnManager = () => {
 
@@ -11,7 +12,13 @@ export const ObtnManager = () => {
 
         <>
             <MainTitle title={"* 수주관리"} />
-            <ObtnList />
+            <div className="flex h-[350px]">
+                <MyCalendar />
+                <div className="w-[2%]"></div>
+                <ObtnList />
+
+            </div>
+
             {/* <ObtnManagerHead /> */}
         </>
 

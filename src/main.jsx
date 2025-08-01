@@ -13,7 +13,6 @@ import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 
-
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <BrowserRouter>

@@ -16,3 +16,95 @@
   align-items: center;
 
 }
+
+ /* 그리드css */
+.ag-theme-balham .ag-row.ag-row-selected {
+  background-color: rgba(0, 123, 255, 0.15) !important; /* 얕은 파란색 */
+  /* color: white; */
+}
+/* 셀 클릭 시 포커스 테두리 제거 */
+.ag-theme-balham .ag-cell:focus,
+.ag-theme-balham .ag-cell.ag-cell-focus {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+/* 헤더 셀 경계선 색상 변경 (더 연한 회색) */
+.ag-theme-balham .ag-header-cell {
+  border-right: 1px solid #d0d0d0 !important;
+}
+
+/* 각 셀 배경 색상 변경 */
+.ag-theme-balham .ag-cell {
+
+  /* color: #555; */
+  /* border-right: 1px solid #e0e0e0; */
+}
+/* 마우스 오버 시 연한 회색 하이라이트 */
+.ag-theme-balham .ag-row-hover {
+  background-color: #eaeaea !important;
+}
+/* 헤더 배경을 좀 더 진한 회색으로 */
+.ag-theme-balham .ag-header {
+  background-color: #d1d5db !important; /* 예: Tailwind의 gray-300 느낌 */
+  color: #1f2937; /* 진한 텍스트 색상 */
+  font-weight: bold;
+}
+/* 캘린더css */
+
+
+
+
+
+.fc-daygrid-event {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%; /* 셀 높이 다 차지하게 */
+  white-space: normal; /* 텍스트 줄바꿈 허용 */
+  text-align: center;
+  font-size: 0.75rem; /* 필요시 글자 크기 조절 */
+  padding: 2px;
+}
+.selected-date {
+  background-color: #dceeff !important;
+  border-radius: 6px;
+}
+/* 날짜 셀 정사각형 비율 제거 */
+.fc .fc-daygrid-day {
+  aspect-ratio: auto !important; /* 기본 1/1 해제 */
+  height: 35px !important;       /* 원하는 세로 높이로 조절 */
+
+ 
+
+}
+
+/* 날짜 숫자 부분 */
+.fc .fc-daygrid-day-top {
+  line-height: 1.2em !important; /* 숫자 영역 높이 조절 */
+  font-size: 0.85rem !important; /* 숫자 크기 조절 가능 */
+}
+.fc-daygrid-day-events{
+  min-height: 0 !important;
+}
+
+
+/* 전체 요일 헤더 배경 검정색 */
+.fc .fc-col-header {
+  background-color: black;
+}
+
+/* 일요일 글자 빨강 */
+.fc .fc-col-header-cell:nth-child(1) {
+  color: red;
+}
+
+/* 토요일 글자 파랑 */
+.fc .fc-col-header-cell:nth-child(7) {
+  color: skyblue;
+}
+
+/* 월~금 글자 흰색 */
+.fc .fc-col-header-cell:nth-child(n+2):nth-child(-n+6) {
+  color: white;
+}
