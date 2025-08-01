@@ -1,7 +1,7 @@
 import {useState} from "react";
-import {getAxios, postAxios} from "../../../api/restApi.js";
+import { postAxios} from "../../../api/restApi.js";
 import {Status} from "../../../enum/enum.js";
-import {Navigate, useNavigate} from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 
 export const ObtnRegisterHead = () => {
     const navigate = useNavigate();
