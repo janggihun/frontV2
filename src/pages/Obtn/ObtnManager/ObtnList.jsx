@@ -12,11 +12,12 @@ export const ObtnList = () => {
     const [obtnList, setObtnList] = useState([]); //원천 데이터
     const [renderList, setRenderList] = useState([]); // 소계/합계 포함된 렌더링 데이터
     const [sortOrder, setSortOrder] = useState('asc');
-
+    const [category, setCategory] = useState("")
     const gridApi = useRef()
 
-    const [columnDefs] = useState([
+    const columnDefs = [
         {
+
             headerCheckboxSelection: true,   // 헤더에 전체 선택 체크박스
             // checkboxSelection: true,         // 각 행에 체크박스
             checkboxSelection: (params) => {
@@ -85,7 +86,9 @@ export const ObtnList = () => {
             }
         },
         { field: 'obtnMk', width: 100, headerName: '비고' },
-    ]);
+    ]
+
+    //그리드 자체 정렬 금지
     const defaultColDef = {
         sortable: false,
     };
@@ -113,22 +116,22 @@ export const ObtnList = () => {
 
     //가장 최신으로 항상 리렌더
     useEffect(() => {
-        const handler = () => {
-            if (sortOrder === 'asc') {
-                setSortOrder('desc');
-            } else {
-                setSortOrder('asc');
-            }
+        const handler = (event) => {
+            const headerCell = event.currentTarget;
+            const colId = headerCell.getAttribute('col-id'); // 클릭한 헤더의 field 값
+            console.log('클릭한 헤더 col-id:', colId);
+
+            setCategory(colId)
+            setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+            // if (colId === 'compNm') {
+            //     setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+            // }
         };
-
-        const headers = document.querySelectorAll('.ag-header-cell[col-id="compNm"]');
-        headers.forEach((header) => {
-            header.addEventListener('click', handler)
-
-        });
+        const headers = document.querySelectorAll('.ag-header-cell'); // 모든 헤더 셀 선택
+        headers.forEach((header) => header.addEventListener('click', handler));
 
         return () => {
-            headers.forEach(header => header.removeEventListener('click', handler));
+            headers.forEach((header) => header.removeEventListener('click', handler));
         };
     });
 
@@ -136,67 +139,104 @@ export const ObtnList = () => {
     //거래처 눌러서 sort변경시 제랜더
     useEffect(() => {
         setRenderList(processDataWithSubtotals(obtnList, sortOrder));
-    }, [sortOrder])
+    }, [sortOrder, category])
 
     // 거래처명 정렬
     const processDataWithSubtotals = (data) => {
-        const sortedData = [...data].sort((a, b) =>
-            sortOrder === 'asc'
-                ? a.compNm.localeCompare(b.compNm)
-                : b.compNm.localeCompare(a.compNm)
-        );
+        if (!category) return data; // 아직 카테고리 선택 안 됐으면 원본 데이터 반환
 
+        const sortedData = [...data].sort((a, b) => {
+            const valA = a[category] || '';
+            const valB = b[category] || '';
+
+            // ✅ mony는 숫자 정렬
+            if (category === 'mony') {
+                const numA = Number(valA) || 0;
+                const numB = Number(valB) || 0;
+                return sortOrder === 'asc' ? numA - numB : numB - numA;
+            }
+
+            // ✅ 나머지는 문자열 정렬
+            return sortOrder === 'asc'
+                ? String(valA).localeCompare(String(valB))
+                : String(valB).localeCompare(String(valA));
+        });
+
+        // ✅ mony일 경우 → 소계 없이 전체 합계만 추가
+        if (category === 'mony' || category === 'testView') {
+            const totalMony = sortedData.reduce((acc, cur) => acc + (Number(cur.mony) || 0), 0);
+            return [
+                ...sortedData.map((item, idx) => ({
+                    ...item,
+                    testView: idx + 1 // 번호 매기기
+                })),
+                {
+                    [category]: '',
+                    testView: '전체 합계',
+                    mony: totalMony,
+                    isTotal: true
+                }
+            ];
+        }
+
+        // ✅ 일반 카테고리 → 소계 + 전체 합계
         const result = [];
         let currentGroup = '';
         let subtotal = 0;
         let i = 1;
-        sortedData.forEach((item, index) => {
-            if (item.compNm !== currentGroup) {
 
+        sortedData.forEach((item, index) => {
+            const groupValue = item[category] || '';
+
+            if (groupValue !== currentGroup) {
                 if (currentGroup !== '') {
-                    i = 1
+                    i = 1;
                     result.push({
-                        compNm: '',
+                        [category]: '',
                         testView: '소계',
                         mony: subtotal,
                         isSubtotal: true,
-                        inputDate: null,  // 날짜 필드는 비움
+                        inputDate: null,
                         updateDate: null
                     });
                     subtotal = 0;
                 }
-                currentGroup = item.compNm;
+                currentGroup = groupValue;
             }
+
             item.testView = i;
             result.push(item);
             subtotal += Number(item.mony) || 0;
 
             if (index === sortedData.length - 1) {
-
                 result.push({
-                    compNm: '',
+                    [category]: '',
                     testView: '소계',
                     mony: subtotal,
                     isSubtotal: true,
-                    inputDate: null,  // 날짜 필드는 비움
+                    inputDate: null,
                     updateDate: null
                 });
-
             }
+
             i++;
         });
 
         // 전체 합계
         const totalMony = sortedData.reduce((acc, cur) => acc + (Number(cur.mony) || 0), 0);
         result.push({
-            compNm: '',
+            [category]: '',
             testView: '전체 합계',
             mony: totalMony,
-            isTotal: true,
+            isTotal: true
         });
 
         return result;
     };
+
+
+
+
 
     const getRowStyle = (params) => {
         if (params.data.isSubtotal) {
@@ -207,6 +247,8 @@ export const ObtnList = () => {
         }
         return null;
     };
+
+
     return (
         <div className="w-full">
 
@@ -232,6 +274,7 @@ export const ObtnList = () => {
                         const isSelected = event.node.isSelected();
                         event.node.setSelected(!isSelected); // 토글 선택
                     }}
+
                 />
 
 
