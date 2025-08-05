@@ -95,3 +95,11 @@ export const deleteAxios = async (url, map) => {
   }
 
 }
+
+export const getCompRead = async () => {
+
+  const url = "/api/v1/comp/read";
+  const res = await getAxios(url);
+
+  return res.data
+}

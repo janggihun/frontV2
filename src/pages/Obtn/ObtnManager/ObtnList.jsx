@@ -17,6 +17,7 @@ export const ObtnList = () => {
         siteNm: '',
         startDate: '',
         endDate: '',
+        mony: 0
     });
 
     const [columnDefs] = useState([
@@ -33,6 +34,7 @@ export const ObtnList = () => {
             },
         },
         { field: 'obtnNm', width: 110, filter: true, headerName: '수주번호' },
+        { field: 'mony', width: 110, filter: true, headerName: '수주금액' },
         { field: 'clientNm', width: 130, filter: true, headerName: '거래처' },
         { field: 'siteNm', width: 130, filter: true, headerName: '현장명' },
         { field: 'inputId', width: 100, filter: true, headerName: '작성자' },

@@ -1,35 +1,40 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { postAxios } from "../../../api/restApi.js";
 import { Status } from "../../../enum/enum.js";
 import { useNavigate } from "react-router-dom";
+import { InputText } from "../../../component/InputTag/inputText.jsx";
+import { useInput } from "../../../component/InputTag/useInput.jsx";
 
 export const ObtnRegisterHead = () => {
     const navigate = useNavigate();
-    const [saveMap, setSaveMap] = useState({});
-
+    const SeachBoxHeight = 40;
+    const [compList, setCompList] = useState()
     const fields = [
         { key: "obtnNm", label: "수주번호" },
         { key: "compCd", label: "거래처" },
         { key: "plceNm", label: "현장명" },
         { key: "obtnMk", label: "비고" },
-        { key: "item5", label: "항목5" },
-        { key: "item6", label: "항목6" },
-        { key: "item7", label: "항목7" },
-        { key: "item8", label: "항목8" },
-        { key: "item9", label: "항목9" },
-        { key: "item10", label: "항목10" },
-        { key: "item11", label: "항목11" },
-        { key: "item12", label: "항목12" },
+        { key: "mony", label: "수주금액" },
+
     ];
 
-    const handleChange = (key, e) => {
-        setSaveMap((prev) => ({
-            ...prev,
-            [key]: e.target.value,
-        }));
-    };
+    //INPUT태그
+    const obtnNm = useInput();      //수주번호
+    const plceNm = useInput();      //장소
+    const obtnMk = useInput();      //비고
+    const mony = useInput();        //수주금액
+    const comp = useInput();        //회사 
 
     const handleSubmit = async () => {
+
+        const saveMap = {
+            obtnNm: obtnNm.value,
+            plceNm: plceNm.value,
+            obtnMk: obtnMk.value,
+            mony: mony.value,
+            comp: comp.value
+        };
+
         const url = "/api/v1/obtn/save";
         const res = await postAxios(url, saveMap);
 
@@ -37,41 +42,61 @@ export const ObtnRegisterHead = () => {
             alert(res.data);
             return navigate("/obtn/manager");
         }
-    };
 
+
+    };
+    useEffect(() => {
+
+        const getData = async () => {
+
+            const res_comp = await getCompRead();
+            setCompList(res_comp)
+
+            console.log()
+
+        }
+        getData()
+
+    }, [])
     return (
-        <div className="w-full bg-white rounded-xl shadow-md p-6 border border-gray-300">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {fields.map(({ key, label }, idx) => (
-                    <div key={idx} className="flex items-center space-x-2">
-                        <label className="text-sm text-gray-700 w-24 shrink-0">{label}</label>
-                        <input
-                            className={`flex-1 border rounded-md px-2 py-1 focus:outline-none transition
-                                ${key === "obtnNm"
-                                    ? "bg-gray-100 cursor-not-allowed border-gray-300"
-                                    : "border-gray-300 focus:ring-2 focus:ring-blue-400"
-                                }
-                            `}
-                            placeholder={key === "obtnNm" ? "" : `${label} 입력`}
-                            value={saveMap[key] || ""}
-                            onChange={(e) => handleChange(key, e)}
-                            disabled={key === "obtnNm"}
-                        />
-                    </div>
-                ))}
+        <div className="p-4">
+            <div className="grid grid-cols-4 divide-x divide-y ">
+                <div className={`flex items-center h-[${SeachBoxHeight}px]`} >
+                    <InputText label="수주번호" {...obtnNm} disabled={true} />
+                </div>
+                <div className={`flex items-center h-[${SeachBoxHeight}px]`}>
+                    {/* <InputText label="수주금액" {...mony} /> */}
+                </div>
+                <div className={`flex items-center h-[${SeachBoxHeight}px]`}>
+                    {/* <InputText label="수주금액" {...mony} /> */}
+                </div>
+                <div className={`flex items-center h-[${SeachBoxHeight}px]`}>
+                    {/* <InputText label="수주금액" {...mony} /> */}
+                </div>
+                <div className={`flex items-center h-[${SeachBoxHeight}px]`}>
+                    <InputText label="현장명" {...plceNm} />
+                </div>
+                <div className={`flex items-center h-[${SeachBoxHeight}px]`}>
+                    <InputText label="회사명" {...comp} />
+                </div>
+                <div className={`flex items-center h-[${SeachBoxHeight}px]`}>
+                    <InputText label="비고" {...obtnMk} />
+                </div>
+                <div className={`flex items-center h-[${SeachBoxHeight}px]`}>
+                    <InputText label="수주금액" {...mony} />
+                </div>
+
             </div>
+
+
+
 
             <button
                 onClick={handleSubmit}
-                className="mt-6 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
             >
                 저장하기
             </button>
-
-            {/* 디버깅용 상태 확인 */}
-            <pre className="mt-4 bg-gray-100 p-2 rounded text-sm text-gray-700">
-                {JSON.stringify(saveMap, null, 2)}
-            </pre>
-        </div>
+        </div >
     );
 };
