@@ -7,6 +7,7 @@ import { formatDateTime } from "../../../common/common.js";
 
 export const ObtnList = () => {
     const gridRef = useRef();
+    const [check, setCheck] = useState();
     const [obtnList, setObtnList] = useState([]);
 
     // 검색 조건 상태
@@ -24,6 +25,12 @@ export const ObtnList = () => {
             checkboxSelection: true,         // 각 행에 체크박스
             width: 40,
             pinned: 'left',
+        },
+        {
+            field: 'testView', width: 110, filter: true, headerName: '테스트'
+            , cellRenderer: (params) => {
+                return params.value;
+            },
         },
         { field: 'obtnNm', width: 110, filter: true, headerName: '수주번호' },
         { field: 'clientNm', width: 130, filter: true, headerName: '거래처' },
@@ -82,6 +89,7 @@ export const ObtnList = () => {
         if (res.status === Status.SUCCESS) {
             const cleanData = res.data.map(item => ({
                 ...item,
+                testView: <span className="test" >테스트</span>,
                 inputDate: item.inputDate ? formatDateTime(item.inputDate) : '',
                 updateDate: item.updateDate ? formatDateTime(item.updateDate) : ''
             }));
@@ -101,6 +109,31 @@ export const ObtnList = () => {
         }));
     };
 
+
+    useEffect(() => {
+        console.log(check)
+        if (check === 1 && obtnList) {
+            console.log("들어옴")
+            const test = () => {
+
+                console.log("테이블이 다 만들어진다음에 추가되는 함수")
+                const list = document.querySelectorAll('.test')
+                console.log(list)
+                document.querySelectorAll('.test').forEach(elem => {
+                    elem.addEventListener('click', function () {
+
+                        alert('11111111')
+
+                    })
+                })
+
+            }
+
+            test()
+        }
+
+
+    }, [obtnList, check])
     return (
         <div className="w-full">
             {/* 검색 조건 영역 */}
@@ -240,6 +273,7 @@ export const ObtnList = () => {
             {/* 데이터 테이블 */}
             <div className="ag-theme-balham" style={{ height: 300, width: '100%' }}>
                 <AgGridReact
+                    onFirstDataRendered={() => { setCheck(1) }}
                     ref={gridRef}
                     rowClass="custom-row-style"
                     rowSelection="multiple"
@@ -247,10 +281,10 @@ export const ObtnList = () => {
                     columnDefs={columnDefs}
                     rowData={obtnList}
                     suppressRowClickSelection={true} // 클릭시 자동 선택 막기
-                    onRowClicked={(event) => {
-                        const isSelected = event.node.isSelected();
-                        event.node.setSelected(!isSelected); // 토글 선택
-                    }}
+                // onRowClicked={(event) => {
+                //     const isSelected = event.node.isSelected();
+                //     event.node.setSelected(!isSelected); // 토글 선택
+                // }}
                 />
             </div>
         </div>
