@@ -108,3 +108,12 @@
 .fc .fc-col-header-cell:nth-child(n+2):nth-child(-n+6) {
   color: white;
 }
+
+
+
+
+/* 그리드 */
+.custom-header-class{
+
+    cursor: pointer;
+}

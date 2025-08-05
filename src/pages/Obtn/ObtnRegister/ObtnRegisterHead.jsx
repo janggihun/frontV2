@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { InputText } from "../../../component/InputTag/inputText.jsx";
 import { useInput } from "../../../component/InputTag/useInput.jsx";
 
-export const ObtnRegisterHead = () => {
+export const ObtnRegisterHead = (props) => {
     const navigate = useNavigate();
     const SeachBoxHeight = 40;
     const [compList, setCompList] = useState()
@@ -87,9 +87,6 @@ export const ObtnRegisterHead = () => {
                 </div>
 
             </div>
-
-
-
 
             <button
                 onClick={handleSubmit}

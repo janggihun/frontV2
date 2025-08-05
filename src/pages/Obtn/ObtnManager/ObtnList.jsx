@@ -1,293 +1,240 @@
 import { useEffect, useRef, useState } from "react";
-import { getAxios } from "../../../api/restApi.js";
-import { Status } from "../../../enum/enum.js";
+import { getObtnList } from "../../../api/restApi.js";
+
 import { AgGridReact } from 'ag-grid-react';
+import { ObtnSearchBox } from "./ObtnSearchBox.jsx";
 import { formatDateTime } from "../../../common/common.js";
 
 
 export const ObtnList = () => {
-    const gridRef = useRef();
-    const [check, setCheck] = useState();
-    const [obtnList, setObtnList] = useState([]);
 
-    // 검색 조건 상태
-    const [searchParams, setSearchParams] = useState({
-        obtnNm: '',
-        clientNm: '',
-        siteNm: '',
-        startDate: '',
-        endDate: '',
-        mony: 0
-    });
+    const [check, setCheck] = useState();
+    const [obtnList, setObtnList] = useState([]); //원천 데이터
+    const [renderList, setRenderList] = useState([]); // 소계/합계 포함된 렌더링 데이터
+    const [sortOrder, setSortOrder] = useState('asc');
+
+    const gridApi = useRef()
 
     const [columnDefs] = useState([
         {
             headerCheckboxSelection: true,   // 헤더에 전체 선택 체크박스
-            checkboxSelection: true,         // 각 행에 체크박스
+            // checkboxSelection: true,         // 각 행에 체크박스
+            checkboxSelection: (params) => {
+                // 소계 또는 합계 행은 체크박스 비활성화
+                return !(params.data?.isSubtotal || params.data?.isTotal);
+            },
             width: 40,
             pinned: 'left',
         },
         {
-            field: 'testView', width: 110, filter: true, headerName: '테스트'
+            field: 'testView', width: 110, headerName: 'No'
             , cellRenderer: (params) => {
                 return params.value;
             },
         },
-        { field: 'obtnNm', width: 110, filter: true, headerName: '수주번호' },
-        { field: 'mony', width: 110, filter: true, headerName: '수주금액' },
-        { field: 'clientNm', width: 130, filter: true, headerName: '거래처' },
-        { field: 'siteNm', width: 130, filter: true, headerName: '현장명' },
-        { field: 'inputId', width: 100, filter: true, headerName: '작성자' },
+        { field: 'obtnNm', width: 110, headerName: '수주번호' },
         {
-            field: 'inputDate', width: 200, filter: 'agDateColumnFilter', headerName: '작성 날짜',
-            filterParams: {
-                comparator: (filterDate, cellValue) => {
-                    const cellDate = new Date(cellValue);
-                    if (cellDate < filterDate) return -1;
-                    if (cellDate > filterDate) return 1;
-                    return 0;
-                },
-                browserDatePicker: true
-            },
-            valueFormatter: params => {
-                const date = new Date(params.value);
-                return date.toLocaleString();
-            }
-        },
-        { field: 'updateId', width: 100, filter: true, headerName: '수정자' },
-        {
-            field: 'updateDate', width: 200, filter: 'agDateColumnFilter', headerName: '수정 날짜',
-            filterParams: {
-                comparator: (filterDate, cellValue) => {
-                    const cellDate = new Date(cellValue);
-                    if (cellDate < filterDate) return -1;
-                    if (cellDate > filterDate) return 1;
-                    return 0;
-                },
-                browserDatePicker: true
-            },
-            valueFormatter: params => {
-                const date = new Date(params.value);
-                return date.toLocaleString();
-            }
-        },
-        { field: 'obtnMk', width: 100, filter: true, headerName: '비고' },
-    ]);
+            field: 'mony', width: 110, headerName: '수주금액',
 
-    const buildQueryString = (params) => {
-        const query = new URLSearchParams();
-        Object.entries(params).forEach(([key, value]) => {
-            if (value) query.append(key, value);
-        });
-        return query.toString();
+            valueFormatter: params => {
+                if (params.value == null) return '';
+                return params.value.toLocaleString();  // 1000000 → "1,000,000"
+            },
+
+        },
+        {
+            field: 'compNm', width: 130, headerName: '거래처',
+            headerClass: 'custom-header-class',
+
+        },
+        { field: 'siteNm', width: 130, headerName: '현장명' },
+        { field: 'inputId', width: 100, headerName: '작성자' },
+        {
+            field: 'inputDate', width: 200, headerName: '작성 날짜',
+            filterParams: {
+                comparator: (filterDate, cellValue) => {
+                    const cellDate = new Date(cellValue);
+                    if (cellDate < filterDate) return -1;
+                    if (cellDate > filterDate) return 1;
+                    return 0;
+                },
+                browserDatePicker: true
+            },
+            valueFormatter: params => {
+                if (!params.value) return '';
+                const date = new Date(params.value);
+                return date.toLocaleString();
+            }
+        },
+        { field: 'updateId', width: 100, headerName: '수정자' },
+        {
+            field: 'updateDate', width: 200, headerName: '수정 날짜',
+            filterParams: {
+                comparator: (filterDate, cellValue) => {
+                    const cellDate = new Date(cellValue);
+                    if (cellDate < filterDate) return -1;
+                    if (cellDate > filterDate) return 1;
+                    return 0;
+                },
+                browserDatePicker: true
+            },
+            valueFormatter: params => {
+                if (!params.value) return '';
+                const date = new Date(params.value);
+                return date.toLocaleString();
+            }
+        },
+        { field: 'obtnMk', width: 100, headerName: '비고' },
+    ]);
+    const defaultColDef = {
+        sortable: false,
     };
 
-    const getObtnList = async (params) => {
-        let url = "/api/v1/obtn/read";
-        const queryString = buildQueryString(params);
-        if (queryString) url += `?${queryString}`;
 
-        const res = await getAxios(url);
-        if (res.status === Status.SUCCESS) {
-            const cleanData = res.data.map(item => ({
+
+    useEffect(() => {
+        const getData = async () => {
+
+            const res_obtn = await getObtnList()
+            const cleanData = res_obtn.map(item => ({
                 ...item,
-                testView: <span className="test" >테스트</span>,
+                testView: '',
                 inputDate: item.inputDate ? formatDateTime(item.inputDate) : '',
                 updateDate: item.updateDate ? formatDateTime(item.updateDate) : ''
             }));
-            setObtnList(cleanData);
-        }
-    };
 
-    useEffect(() => {
-        getObtnList({});
+            const newList = processDataWithSubtotals(cleanData);
+            setObtnList(cleanData);
+            setRenderList(newList)
+        }
+        getData()
+
     }, []);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setSearchParams(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
-
+    //가장 최신으로 항상 리렌더
     useEffect(() => {
-        console.log(check)
-        if (check === 1 && obtnList) {
-            console.log("들어옴")
-            const test = () => {
+        const handler = () => {
+            if (sortOrder === 'asc') {
+                setSortOrder('desc');
+            } else {
+                setSortOrder('asc');
+            }
+        };
 
-                console.log("테이블이 다 만들어진다음에 추가되는 함수")
-                const list = document.querySelectorAll('.test')
-                console.log(list)
-                document.querySelectorAll('.test').forEach(elem => {
-                    elem.addEventListener('click', function () {
+        const headers = document.querySelectorAll('.ag-header-cell[col-id="compNm"]');
+        headers.forEach((header) => {
+            header.addEventListener('click', handler)
 
-                        alert('11111111')
+        });
 
-                    })
-                })
+        return () => {
+            headers.forEach(header => header.removeEventListener('click', handler));
+        };
+    });
+
+
+    //거래처 눌러서 sort변경시 제랜더
+    useEffect(() => {
+        setRenderList(processDataWithSubtotals(obtnList, sortOrder));
+    }, [sortOrder])
+
+    // 거래처명 정렬
+    const processDataWithSubtotals = (data) => {
+        const sortedData = [...data].sort((a, b) =>
+            sortOrder === 'asc'
+                ? a.compNm.localeCompare(b.compNm)
+                : b.compNm.localeCompare(a.compNm)
+        );
+
+        const result = [];
+        let currentGroup = '';
+        let subtotal = 0;
+        let i = 1;
+        sortedData.forEach((item, index) => {
+            if (item.compNm !== currentGroup) {
+
+                if (currentGroup !== '') {
+                    i = 1
+                    result.push({
+                        compNm: '',
+                        testView: '소계',
+                        mony: subtotal,
+                        isSubtotal: true,
+                        inputDate: null,  // 날짜 필드는 비움
+                        updateDate: null
+                    });
+                    subtotal = 0;
+                }
+                currentGroup = item.compNm;
+            }
+            item.testView = i;
+            result.push(item);
+            subtotal += Number(item.mony) || 0;
+
+            if (index === sortedData.length - 1) {
+
+                result.push({
+                    compNm: '',
+                    testView: '소계',
+                    mony: subtotal,
+                    isSubtotal: true,
+                    inputDate: null,  // 날짜 필드는 비움
+                    updateDate: null
+                });
 
             }
+            i++;
+        });
 
-            test()
+        // 전체 합계
+        const totalMony = sortedData.reduce((acc, cur) => acc + (Number(cur.mony) || 0), 0);
+        result.push({
+            compNm: '',
+            testView: '전체 합계',
+            mony: totalMony,
+            isTotal: true,
+        });
+
+        return result;
+    };
+
+    const getRowStyle = (params) => {
+        if (params.data.isSubtotal) {
+            return { backgroundColor: '#f0f8ff', fontWeight: 'bold' };
         }
-
-
-    }, [obtnList, check])
+        if (params.data.isTotal) {
+            return { backgroundColor: '#ffe4e1', fontWeight: 'bold' };
+        }
+        return null;
+    };
     return (
         <div className="w-full">
-            {/* 검색 조건 영역 */}
-            <div style={{
-                marginBottom: 10,
-                display: 'flex',
-                gap: 8,
-                flexWrap: 'nowrap',
-                width: 1050,
-                alignItems: 'center',
-                fontSize: 14,
-                overflowX: 'auto',
-                width: '100%'
-            }}>
-                {/* 왼쪽 검정 동그라미 + 텍스트 + 총건수 */}
-                <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 6,
-                    flex: '0 0 auto',
-                    userSelect: 'none',
-                }}>
-                    <div
-                        style={{
-                            width: 10,
-                            height: 10,
-                            borderRadius: '50%',
-                            backgroundColor: 'black',
-                        }}
-                    />
-                    <span style={{ fontWeight: 'bold' }}>수주리스트</span>
-                    <span style={{ marginLeft: 8, color: '#555', fontSize: 13 }}>
-                        총 {obtnList.length}건
-                    </span>
-                </div>
-                <div className="w-[8%]"></div>
-                {/* 검색 input들 */}
-                <input
-                    type="text"
-                    name="obtnNm"
-                    placeholder="수주번호"
-                    value={searchParams.obtnNm}
-                    onChange={handleChange}
-                    style={{ width: 140, padding: 6, borderRadius: 4, border: '1px solid #ccc', flexShrink: 0 }}
-                />
-                {/* 필요시 다른 input들도 여기에 추가 */}
 
-                <label style={{ whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 4 }}>
-                    시작날짜
-                    <input
-                        type="date"
-                        name="startDate"
-                        value={searchParams.startDate}
-                        onChange={handleChange}
-                        style={{ flex: '1 1 130px', padding: 6, borderRadius: 4, border: '1px solid #ccc' }}
-                    />
-                </label>
-
-                <label style={{ whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 4 }}>
-                    끝날짜
-                    <input
-                        type="date"
-                        name="endDate"
-                        value={searchParams.endDate}
-                        onChange={handleChange}
-                        style={{ flex: '1 1 130px', padding: 6, borderRadius: 4, border: '1px solid #ccc' }}
-                    />
-                </label>
-
-                {/* 버튼을 오른쪽 끝으로 밀기 위한 빈 flex-grow 요소 */}
-                <div style={{ flexGrow: 1 }} />
-
-                <button
-                    onClick={() => getObtnList(searchParams)}
-                    style={{
-                        padding: '6px 18px',
-                        borderRadius: 4,
-                        backgroundColor: '#3b82f6',
-                        color: 'white',
-                        border: 'none',
-                        cursor: 'pointer',
-                        fontWeight: 'bold',
-                        fontSize: 14,
-                        flex: '0 0 auto',
-                    }}
-                >
-                    검색
-                </button>
-                <button
-                    onClick={() => {
-                        if (gridRef.current) {
-                            const selectedRows = gridRef.current.api.getSelectedRows();
-
-                            if (selectedRows.length === 0) {
-                                alert("선택된 행이 없습니다.");
-                                return;
-                            }
-                            //전체 내보내기
-                            // gridRef.current.api.exportDataAsCsv({
-                            //     fileName: '수주리스트.csv', // 저장될 파일명
-                            //     columnSeparator: ',',      // 기본은 쉼표 (변경 가능)
-                            // });
-
-                            gridRef.current.api.exportDataAsCsv({
-                                fileName: '수주리스트.csv',
-                                onlySelected: true, // 선택된 행만 내보냄
-                                columnSeparator: ',',
-                            });
-                        }
-                    }}
-                    style={{
-                        padding: '6px 14px',
-                        borderRadius: 4,
-                        backgroundColor: '#10b981',
-                        color: 'white',
-                        border: 'none',
-                        cursor: 'pointer',
-                        fontWeight: 'bold',
-                        fontSize: 14,
-                        flex: '0 0 auto',
-                        marginLeft: 8
-                    }}
-                >
-                    CSV 다운로드
-                </button>
-                {/* 
-                    csv다운로드시
-                    
-                    10만 행 이내: 대부분 문제 없음
-
-                    30만 행 이내: 일부 구형 브라우저에서 메모리 문제 발생 가능
-
-                    50만~100만 이상: 브라우저 환경에서는 비추천 → 서버 사이드 생성이 안전 */}
-            </div>
-
-
+            {/* 검색조건 */}
+            <ObtnSearchBox obtnList={obtnList} gridApi={gridApi} />
             {/* 데이터 테이블 */}
             <div className="ag-theme-balham" style={{ height: 300, width: '100%' }}>
                 <AgGridReact
-                    onFirstDataRendered={() => { setCheck(1) }}
-                    ref={gridRef}
+                    // onFirstDataRendered={() => { renderCallBack() }}
+                    ref={gridApi}
+
                     rowClass="custom-row-style"
                     rowSelection="multiple"
                     rowHeight={40}
                     columnDefs={columnDefs}
-                    rowData={obtnList}
+                    rowData={renderList}
                     suppressRowClickSelection={true} // 클릭시 자동 선택 막기
-                // onRowClicked={(event) => {
-                //     const isSelected = event.node.isSelected();
-                //     event.node.setSelected(!isSelected); // 토글 선택
-                // }}
+                    defaultColDef={defaultColDef}
+                    isRowSelectable={params => !(params.data?.isSubtotal || params.data?.isTotal)} // 소계/합계는 선택 불가
+                    getRowStyle={getRowStyle}
+                    // onCellClicked={onCellClicked} // 클릭시 셀 클릭가능
+                    onRowClicked={(event) => {
+                        const isSelected = event.node.isSelected();
+                        event.node.setSelected(!isSelected); // 토글 선택
+                    }}
                 />
+
+
             </div>
         </div>
     );
