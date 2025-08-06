@@ -117,3 +117,15 @@
 
     cursor: pointer;
 }
+/* 예: 진하게 + 배경색 */
+.highlight-header {
+        color: white;
+    background-color: #313131 !important;
+    font-weight: bold !important;
+}/* 모든 ag-Grid 헤더 가운데 정렬 */
+.ag-header-cell-label {
+    justify-content: center !important;
+}
+.rag-red {
+    background-color: #cc222244;
+}

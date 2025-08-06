@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { postAxios } from "../../../api/restApi.js";
+import { getCompRead, postAxios } from "../../../api/restApi.js";
 import { Status } from "../../../enum/enum.js";
 import { useNavigate } from "react-router-dom";
 import { InputText } from "../../../component/InputTag/inputText.jsx";
@@ -7,7 +7,7 @@ import { useInput } from "../../../component/InputTag/useInput.jsx";
 
 export const ObtnRegisterHead = (props) => {
     const navigate = useNavigate();
-    const SeachBoxHeight = 40;
+    const SeachBoxHeight = 50;
     const [compList, setCompList] = useState()
     const fields = [
         { key: "obtnNm", label: "수주번호" },
