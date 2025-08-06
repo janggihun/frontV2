@@ -137,8 +137,6 @@ export const ObtnList = () => {
 
 
     useEffect(() => {
-
-
         const getData = async () => {
 
             const res_obtn = await getObtnList()
@@ -163,11 +161,10 @@ export const ObtnList = () => {
             {/* 검색조건 */}
             <ObtnSearchBox obtnList={obtnList} gridApi={gridApi} />
             {/* 데이터 테이블 */}
-
             <div className="ag-theme-balham" style={{ height: 300, width: '100%' }}>
-
                 {/* 커스텀리스트 */}
                 {obtnList.length > 0 && <ListTable originList={obtnList} columnDefs={columnDefs} />}
+                <div className="w-[100%] h-[30px]"></div>
                 {obtnList.length > 0 && <ListTable originList={obtnList} columnDefs={columnDefs} />}
             </div>
         </div>
