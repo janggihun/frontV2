@@ -50,7 +50,7 @@ export const processDataWithSubtotals = (data, category, sortOrder) => {
             })),
             {
                 [category]: '',
-                testView: '전체 합계',
+                No: '전체 합계',
                 mony: totalMony,
                 isTotal: true
             }
@@ -71,7 +71,7 @@ export const processDataWithSubtotals = (data, category, sortOrder) => {
                 i = 1;
                 result.push({
                     [category]: '',
-                    testView: '소계',
+                    No: '소계',
                     mony: subtotal,
                     isSubtotal: true,
                     inputDate: null,
@@ -90,7 +90,7 @@ export const processDataWithSubtotals = (data, category, sortOrder) => {
         if (index === sortedData.length - 1) {
             result.push({
                 [category]: '',
-                testView: '소계',
+                No: '소계',
                 mony: subtotal,
                 isSubtotal: true,
                 inputDate: null,
@@ -104,7 +104,7 @@ export const processDataWithSubtotals = (data, category, sortOrder) => {
     const totalMony = sortedData.reduce((acc, cur) => acc + (Number(cur.mony) || 0), 0);
     result.push({
         [category]: '',
-        testView: '전체 합계',
+        No: '전체 합계',
         mony: totalMony,
         isTotal: true
     });

@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { AgGridReact } from 'ag-grid-react';
 import { processDataWithSubtotals } from "../common/common.js";
+import { ObtnList_columnDefs } from "../pages/Obtn/ObtnManager/columnDefs.js";
 
 export const ListTable = (props) => {
 
     //부모에게 받은 데이터
     const originList = props.originList;
-    const columnDefs = props.columnDefs;
+    const columnDefs = ObtnList_columnDefs;
     const categoryList = columnDefs.map(col => col.field).filter(field => field !== undefined);
     // console.log(categoryList)
     //상태 변수 데이터
@@ -21,7 +22,7 @@ export const ListTable = (props) => {
 
     //거래처 눌러서 sort변경시 제랜더
     useEffect(() => {
-        console.log(category)
+
         setRenderList(processDataWithSubtotals(originList, category, sortOrder));
 
     }, [sortOrder, category])
@@ -57,12 +58,12 @@ export const ListTable = (props) => {
             <div className="ag-theme-balham" style={{ height: 300, width: '100%' }}>
                 <AgGridReact
                     defaultColDef={{
-                        sortable: false   // ✅ 헤더 클릭 시 정렬 막기
+                        sortable: false                     //헤더 클릭 시 정렬 막기
                     }}
                     ref={gridApi}
                     rowClass="custom-row-style"
                     rowHeight={45}
-                    rowSelection={'multiple'}
+                    rowSelection={'multiple'}               //여러샐 동시 체크박스가능
                     suppressRowClickSelection={true}
                     rowData={renderList}
                     onColumnHeaderClicked={onHeaderClick}   //열 헤더 클릭

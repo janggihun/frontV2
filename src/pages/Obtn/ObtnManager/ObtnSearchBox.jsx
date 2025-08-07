@@ -1,6 +1,5 @@
 export const ObtnSearchBox = (props) => {
     const obtnList = props.obtnList
-    const gridApi = props.gridApi.current
 
     // 검색 조건 상태
     const searchParams = {
