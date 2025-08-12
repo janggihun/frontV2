@@ -1,5 +1,3 @@
-
-import { formatDateTime } from "../common/common";
 import { Status } from "../enum/enum";
 import axios from "./axiosConfig"; // 토큰 가져가서 확인할수 있게함
 
@@ -13,7 +11,8 @@ const base = ""
 export const getAxios = async (url, map) => {
 
   try {
-    const res = await axios.get(base + url, map, {
+    const res = await axios.get(base + url,  {
+      params : map,
       withCredentials: true
     });
     return res.data;
@@ -113,10 +112,10 @@ export const getCompRead = async () => {
   return res.data
 }
 
-export const getObtnList = async () => {
+export const getObtnList = async (searchMap) => {
   const url = "/api/v1/obtn/read";
 
-  const res = await getAxios(url);
+  const res = await getAxios(url, searchMap);
   if (res.status === Status.SUCCESS) {
     return res.data;
   }

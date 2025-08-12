@@ -12,8 +12,6 @@ export const ObtnRead = () => {
 
         <>
             <MainTitle title={"* 수주보기"}/>
-            <ObtnList />
-            <ObtnRegisterBody/>
 
         </>
 

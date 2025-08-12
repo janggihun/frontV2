@@ -16,10 +16,8 @@ export const ObtnManager = () => {
                 <MyCalendar />
                 <div className="w-[2%]"></div>
                 <ObtnList />
-
             </div>
 
-            {/* <ObtnManagerHead /> */}
         </>
 
     )

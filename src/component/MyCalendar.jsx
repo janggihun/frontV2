@@ -20,10 +20,18 @@ export const MyCalendar = () => {
     useEffect(() => {
         if (calendarRef.current) {
             const api = calendarRef.current.getApi();
-            api.gotoDate(new Date());
+            api.updateSize();
             setCurrentDate(api.getDate());
+            //해당 날짜 셀
+            // const dateCell = document.querySelector(`[data-date="${todayStr}"]`);
         }
-    }, []);
+    });
+    useEffect(()=>{
+        const api = calendarRef.current.getApi();
+        console.log(calendarRef.current)
+        api.gotoDate(new Date());
+
+    },[])
 
     const formatYearMonth = (date) => {
         const y = date.getFullYear();

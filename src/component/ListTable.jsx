@@ -7,6 +7,7 @@ export const ListTable = (props) => {
 
     //부모에게 받은 데이터
     const originList = props.originList;
+
     const columnDefs = ObtnList_columnDefs;
     const categoryList = columnDefs.map(col => col.field).filter(field => field !== undefined);
     // console.log(categoryList)
@@ -23,12 +24,9 @@ export const ListTable = (props) => {
     //거래처 눌러서 sort변경시 제랜더
     useEffect(() => {
 
-
-
-
         setRenderList(processDataWithSubtotals(originList, category, sortOrder));
 
-    }, [sortOrder, category])
+    }, [sortOrder, category,originList])
 
     const onHeaderClick = (e) => {
         // console.log("클릭한 컬럼:", e.column.getColId());
