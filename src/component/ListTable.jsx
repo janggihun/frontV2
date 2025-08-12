@@ -23,6 +23,9 @@ export const ListTable = (props) => {
     //거래처 눌러서 sort변경시 제랜더
     useEffect(() => {
 
+
+
+
         setRenderList(processDataWithSubtotals(originList, category, sortOrder));
 
     }, [sortOrder, category])

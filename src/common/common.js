@@ -37,7 +37,10 @@ export const processDataWithSubtotals = (data, category, sortOrder) => {
                 : String(valB).localeCompare(String(valA));
         }
     });
-
+    //넘버링 시작
+    sortedData.forEach((el,i)=>{
+        el.No = i+1;
+    })
     const isCategoryNumeric = !isNaN(Number(sortedData[0][category]));
 
     // ✅ 숫자 기준으로 정렬한 경우 → 소계 없이 전체 합계만
