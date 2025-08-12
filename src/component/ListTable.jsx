@@ -11,14 +11,14 @@ export const ListTable = (props) => {
     const columnDefs = ObtnList_columnDefs;
     const categoryList = columnDefs.map(col => col.field).filter(field => field !== undefined);
     // console.log(categoryList)
-    //상태 변수 데이터
-    const gridApi = useRef()
 
     //상태 변환 데이터
     const [sortOrder, setSortOrder] = useState('asc');
     const [category, setCategory] = useState(categoryList[0])
     const [renderList, setRenderList] = useState([])
-    //가공 데이터
+
+    const gridRef = useRef(null);
+
 
 
     //거래처 눌러서 sort변경시 제랜더
@@ -49,10 +49,18 @@ export const ListTable = (props) => {
             return { backgroundColor: '#f0f8ff', fontWeight: 'bold' }; // 소계
         }
         if (params.data?.isTotal) {
-            return { backgroundColor: '#ffe4e1', fontWeight: 'bold' }; // 합계
+            return {
+                backgroundColor: '#ffe4e1',
+                fontWeight: 'bold' ,
+            }; // 합계
         }
         return null;
     }
+    //완벽히 로드후에 api취득
+    const renderOnload = ()=>{
+        props.setGridApi(gridRef.current.api);
+    }
+
     return (
         <div className="w-full">
             {/* 데이터 테이블 */}
@@ -61,7 +69,8 @@ export const ListTable = (props) => {
                     defaultColDef={{
                         sortable: false                     //헤더 클릭 시 정렬 막기
                     }}
-                    ref={gridApi}
+                    onFirstDataRendered={renderOnload}
+                    ref={gridRef}
                     rowClass="custom-row-style"
                     rowHeight={45}
                     rowSelection={'multiple'}               //여러샐 동시 체크박스가능
@@ -74,6 +83,7 @@ export const ListTable = (props) => {
                     onRowClicked={onRowClicked}             //행 클릭시 이벤트
                 />
             </div>
+
         </div>
     );
 };

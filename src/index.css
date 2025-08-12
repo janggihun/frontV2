@@ -66,17 +66,14 @@
   font-size: 0.75rem; /* 필요시 글자 크기 조절 */
   padding: 2px;
 }
-.selected-date {
-  background-color: #dceeff !important;
-  border-radius: 6px;
+.fc .fc-highlight  {
+  background-color: rgba(108, 182, 255, 0.76) !important;
+  /*border-radius: 6px;*/
 }
 /* 날짜 셀 정사각형 비율 제거 */
 .fc .fc-daygrid-day {
   aspect-ratio: auto !important; /* 기본 1/1 해제 */
   height: 35px !important;       /* 원하는 세로 높이로 조절 */
-
- 
-
 }
 
 /* 날짜 숫자 부분 */
@@ -87,7 +84,10 @@
 .fc-daygrid-day-events{
   min-height: 0 !important;
 }
-
+/*오늘색 넣기*/
+.fc .fc-daygrid-day.fc-day-today {
+  background-color: rgba(255, 179, 218, 0.62);
+}
 
 /* 전체 요일 헤더 배경 검정색 */
 .fc .fc-col-header {

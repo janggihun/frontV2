@@ -1,15 +1,16 @@
 import {useEffect, useState} from "react";
 import {getObtnList} from "../../../api/restApi.js";
-import {AgGridReact} from 'ag-grid-react';
 import {ObtnSearchBox} from "./ObtnSearchBox.jsx";
 import {formatDateTime} from "../../../common/common.js";
 import {ListTable} from "../../../component/ListTable.jsx";
+import {MyCalendar} from "../../../component/MyCalendar.jsx";
 
 export const ObtnList = () => {
 
     const [obtnList, setObtnList] = useState(); //원천 데이터
     const [searchMap, setSearchMap] = useState({});
-    
+    const [gridApi, setGridApi] = useState();
+
     //수주 리스트 취득
     const getData = async () => {
 
@@ -28,19 +29,28 @@ export const ObtnList = () => {
     //     getData()
     // }, []);
 
-    useEffect(()=>{
+    useEffect(() => {
         getData();
-    },[searchMap])
+    }, [searchMap])
 
     if (obtnList) {
         return (
-            <div className="w-full">
+            <>
+                <div className="w-[350px]">
+                    {/* 캘린더 */}
+                    <MyCalendar  searchMap={searchMap}  setSearchMap={setSearchMap}/>
+                </div>
 
-                {/* 검색조건 */}
-                <ObtnSearchBox obtnList={obtnList} setSearchMap={setSearchMap} searchMap={searchMap} />
-                {/* 데이터 테이블 */}
-                { <ListTable originList={obtnList} searchMap={searchMap}/>}
-            </div>
+                <div className="w-[2%]"></div>
+                <div className="w-[78%]">
+                    {/* 검색조건 */}
+                    <ObtnSearchBox obtnList={obtnList} setSearchMap={setSearchMap} searchMap={searchMap}
+                                   gridApi={gridApi}/>
+                    {/* 데이터 테이블 */}
+                    <ListTable originList={obtnList} searchMap={searchMap} setGridApi={setGridApi}/>
+
+                </div>
+            </>
         );
 
     }

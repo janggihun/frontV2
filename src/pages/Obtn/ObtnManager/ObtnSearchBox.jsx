@@ -1,7 +1,9 @@
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useState} from "react";
+import {today} from "../../../common/common.js";
 
 export const ObtnSearchBox = (props) => {
     const obtnList = props.obtnList;
+    const gridApi = props.gridApi
     const [obtnNm, setObtnNms] = useState();
     const [startDt, setStartDt] = useState();
     const [endDt, setEndDt] = useState();
@@ -32,8 +34,8 @@ export const ObtnSearchBox = (props) => {
     }
 
     useEffect(()=>{
-
-
+        setStartDt( today())
+        setEndDt(today())
     },[])
     return <>  {/* 검색 조건 영역 */}
         <div style={{
@@ -122,8 +124,10 @@ export const ObtnSearchBox = (props) => {
             </button>
             <button
                 onClick={() => {
+
                     if (gridApi) {
-                        const selectedRows = gridApi.api.getSelectedRows();
+                        console.log(gridApi)
+                        const selectedRows = gridApi.getSelectedRows();
                         console.log(selectedRows)
                         if (selectedRows.length === 0) {
                             alert("선택된 행이 없습니다.");
@@ -135,7 +139,7 @@ export const ObtnSearchBox = (props) => {
                         //     columnSeparator: ',',      // 기본은 쉼표 (변경 가능)
                         // });
 
-                        gridApi.api.exportDataAsCsv({
+                        gridApi.exportDataAsCsv({
                             fileName: '수주리스트.csv',
                             onlySelected: true, // 선택된 행만 내보냄
                             columnSeparator: ',',

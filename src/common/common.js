@@ -7,14 +7,21 @@ export const formatDateTime = (dateString) => {
     const yyyy = date.getFullYear();
     const mm = pad(date.getMonth() + 1);
     const dd = pad(date.getDate());
-    const hh = pad(date.getHours());
-    const min = pad(date.getMinutes());
-    const ss = pad(date.getSeconds());
+    // const hh = pad(date.getHours());
+    // const min = pad(date.getMinutes());
+    // const ss = pad(date.getSeconds());
 
     return `${yyyy}-${mm}-${dd}`;
     // return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
 }
+export const today = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
 
+    return `${year}-${month}-${day}`;
+}
 
 // 정렬
 export const processDataWithSubtotals = (data, category, sortOrder) => {
@@ -38,8 +45,8 @@ export const processDataWithSubtotals = (data, category, sortOrder) => {
         }
     });
     //넘버링 시작
-    sortedData.forEach((el,i)=>{
-        el.No = i+1;
+    sortedData.forEach((el, i) => {
+        el.No = i + 1;
     })
     const isCategoryNumeric = !isNaN(Number(sortedData[0][category]));
 
