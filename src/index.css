@@ -130,13 +130,7 @@
     background-color: #cc222244;
 }
 
-
-/*tabulator CSS 변경*/
-
-.tabulator .tabulator-header {
-  background-color: #004466;
-  color: white;
-}
-.tabulator .tabulator-row.tabulator-selected {
-  background-color: #ffdd00;
+/*우클릭 css*/
+.ag-theme-balham .ag-menu {
+  z-index: 1000 !important;
 }

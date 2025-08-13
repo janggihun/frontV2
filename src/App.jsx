@@ -13,10 +13,13 @@ import {ObtnRegister} from './pages/Obtn/ObtnRegister/ObtnRegister.jsx'
 import {Layout} from "./component/Layout.jsx";
 import {ObtnRead} from "./pages/Obtn/ObtnRead/ObtnRead.jsx";
 import {LoadingComponent} from "./component/LoadingComponent.jsx";
+import {getDispatch} from "./api/restApi.js";
+import {useDispatch} from "react-redux";
 
 
 function App() {
-
+    const dispatch = useDispatch();
+    getDispatch(dispatch)
     return (
         <>
 

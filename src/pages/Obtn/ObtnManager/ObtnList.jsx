@@ -34,11 +34,10 @@ export const ObtnList = () => {
     // }, []);
 
     useEffect(() => {
-
          getData();
-
-
     }, [searchMap])
+
+
 
     if (obtnList) {
         return (

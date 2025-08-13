@@ -1,7 +1,16 @@
-import { Status } from "../enum/enum";
-import axios from "./axiosConfig"; // 토큰 가져가서 확인할수 있게함
+import {Status} from "../enum/enum";
+import axios from "./axiosConfig";
+import {closeLoading} from "../store/LoadingSlice.jsx";
 
 
+//디스페치
+let dispatch = null;
+
+export const getDispatch = (value)=>{
+
+  dispatch = value;
+
+}
 const base = ""
 
 /*
@@ -19,6 +28,9 @@ export const getAxios = async (url, map) => {
   } catch (error) {
     // console.log(error)
     alert(error.response.data.data)
+
+  }finally {
+    dispatch(closeLoading())
   }
 }
 
@@ -33,6 +45,10 @@ export const getMeAxios = async () => {
   } catch (error) {
     // console.log(error)
     alert(error.response.data.data)
+
+
+  }finally {
+    dispatch(closeLoading())
   }
 }
 
@@ -47,6 +63,9 @@ export const getLogoutAxios = async () => {
   } catch (error) {
     // console.log(error)
     alert(error.response.data.data)
+
+  }finally {
+    dispatch(closeLoading())
   }
 }
 /*
@@ -61,6 +80,9 @@ export const postAxios = async (url, map) => {
     return res.data
   } catch (error) {
     alert(error.response.data.data)
+
+  }finally {
+    dispatch(closeLoading())
   }
 
 
@@ -78,6 +100,9 @@ export const patchAxios = async (url, map) => {
     return res.data
   } catch (error) {
     alert(error.response.data.data)
+
+  }finally {
+    dispatch(closeLoading())
   }
 
 }
@@ -95,6 +120,9 @@ export const deleteAxios = async (url, map) => {
     return res.data
   } catch (error) {
     alert(error.response.data.data)
+
+  }finally {
+    dispatch(closeLoading())
   }
 
 }

@@ -16,6 +16,7 @@ export const ListTable = (props) => {
     const [sortOrder, setSortOrder] = useState('asc');
     const [category, setCategory] = useState(categoryList[3])
     const [renderList, setRenderList] = useState([])
+    const [contextMenu, setContextMenu] = useState({visible: false, x: 0, y: 0, rowData: null}); //우클릭
 
     const gridRef = useRef(null);
 
@@ -26,7 +27,7 @@ export const ListTable = (props) => {
     const filteredList = renderList.filter(row => !row.isSubtotal);
 
 // 합계 계산
-    const totalRow = { No: '전체 합계' };
+    const totalRow = {No: '전체 합계'};
     columnsToSum.forEach(col => {
         totalRow[col] = filteredList.reduce((sum, row) => sum + (Number(row[col]) || 0), 0);
     });
@@ -34,7 +35,13 @@ export const ListTable = (props) => {
 // pinnedBottomRowData에 넣기
     const pinnedBottomRowData = [totalRow];
 
-
+    //우클릭시
+    useEffect(() => {
+        const handleClick = () => setContextMenu({ ...contextMenu, visible: false });
+        window.addEventListener('click', handleClick);
+        return () => window.removeEventListener('click', handleClick);
+    }, [contextMenu]);
+    
     //거래처 눌러서 sort변경시 제랜더
     useEffect(() => {
 
@@ -74,31 +81,113 @@ export const ListTable = (props) => {
         props.setGridApi(gridRef.current.api);
     }
 
-    return (
-        <div className="w-full">
-            {/* 데이터 테이블 */}
-            <div className="ag-theme-balham" style={{height: 300, width: '100%'}}>
-                <AgGridReact
-                    defaultColDef={{
-                        sortable: false                     //헤더 클릭 시 정렬 막기
-                    }}
-                    onFirstDataRendered={renderOnload}
-                    ref={gridRef}
-                    rowClass="custom-row-style"
-                    rowHeight={45}
-                    rowSelection={'multiple'}               //여러샐 동시 체크박스가능
-                    suppressRowClickSelection={true}
-                    rowData={renderList}
-                    onColumnHeaderClicked={onHeaderClick}   //열 헤더 클릭
-                    animateRows={false}                     //에니매이션 중지
-                    columnDefs={columnDefs}
-                    getRowStyle={getRowStyle}               //소계,합계 색 입히는 함수
-                    onRowClicked={onRowClicked}             //행 클릭시 이벤트
-                    pinnedBottomRowData={pinnedBottomRowData}
+    //컨텍스트 매뉴 유료
+    // const getContextMenuItems = (params) => [
+    //     {
+    //         name: '삭제',
+    //         action: () => alert(params.node.data.name)
+    //     },
+    //     'copy' // Community에서도 기본 제공 복사 메뉴 가능
+    // ];
 
-                />
+    // ① 우클릭 이벤트 함수 정의
+    const onCellContextMenu = (params) => {
+        params.event.preventDefault();
+        setContextMenu({
+            visible: true,
+            x: params.event.clientX,
+            y: params.event.clientY,
+            rowData: params.node.data
+        });
+    };
+    return (
+        <>
+            <div className="w-full">
+                {/* 데이터 테이블 */}
+                <div className="ag-theme-balham" style={{height: 300, width: '100%'}}
+                     onContextMenu={(e) => e.preventDefault()} // 전체 브라우저 메뉴 차단
+                >
+                    <AgGridReact
+                        defaultColDef={{
+                            sortable: false                     //헤더 클릭 시 정렬 막기
+                        }}
+                        onFirstDataRendered={renderOnload}
+                        ref={gridRef}
+                        rowClass="custom-row-style"
+                        rowHeight={45}
+                        rowSelection={'multiple'}               //여러샐 동시 체크박스가능
+                        suppressRowClickSelection={true}
+                        rowData={renderList}
+
+                        onColumnHeaderClicked={onHeaderClick}   //열 헤더 클릭
+                        animateRows={false}                     //에니매이션 중지
+                        columnDefs={columnDefs}
+                        getRowStyle={getRowStyle}               //소계,합계 색 입히는 함수
+                        onRowClicked={onRowClicked}             //행 클릭시 이벤트
+                        pinnedBottomRowData={pinnedBottomRowData}   //맨아래 푸터고정
+                        onCellContextMenu={onCellContextMenu} //우클릭
+                        // getContextMenuItems={getContextMenuItems} //유료
+                        // suppressContextMenu={false} // 필수        //유료
+
+
+                    />
+                </div>
+
             </div>
 
-        </div>
+            {/*우클릭 모달*/}
+            {contextMenu.visible && (
+                <div
+                    style={{
+                        position: 'fixed',
+                        top: contextMenu.y,
+                        left: contextMenu.x,
+                        background: '#ffffff',
+                        border: '1px solid #ddd',
+                        borderRadius: '6px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                        padding: '4px 0',
+                        zIndex: 1000,
+                        minWidth: '160px',
+                        fontFamily: 'Arial, sans-serif',
+                        fontSize: '14px',
+                    }}
+                >
+                    <div
+                        style={{
+                            padding: '8px 16px',
+                            cursor: 'pointer',
+                            transition: 'background 0.2s',
+                        }}
+                        onClick={() => {
+                            if(!contextMenu.rowData.obtnNm) return;
+                            alert(`수주 : ${contextMenu.rowData.obtnNm} 건을 수정합니다.`);
+                            setContextMenu({ ...contextMenu, visible: false });
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f0f0f0')}
+                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                    >
+                        수주수정하기
+                    </div>
+                    <div
+                        style={{
+                            padding: '8px 16px',
+                            cursor: 'pointer',
+                            transition: 'background 0.2s',
+                        }}
+                        onClick={() => {
+                            if(!contextMenu.rowData.obtnNm) return;
+                            alert(`수주 : ${contextMenu.rowData.obtnNm} 건을 삭제하시겠습니까?`);
+                            setContextMenu({ ...contextMenu, visible: false });
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f0f0f0')}
+                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                    >
+                        수주취소하기
+                    </div>
+                </div>
+            )}
+
+        </>
     );
 };

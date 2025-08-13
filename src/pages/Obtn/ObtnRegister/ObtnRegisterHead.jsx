@@ -10,6 +10,7 @@ export const ObtnRegisterHead = (props) => {
     const navigate = useNavigate();
     const SeachBoxHeight = 50;
     const [compList, setCompList] = useState()
+
     const fields = [
         { key: "obtnNm", label: "수주번호" },
         { key: "compCd", label: "거래처" },

@@ -21,7 +21,7 @@ export const ObtnRegister = () => {
 
         <>
             <MainTitle title={"* 수주등록"} />
-            <SubTitle title={"* 업체정보"} />
+            {/*<SubTitle title={"* 업체정보"} />*/}
             <ObtnRegisterHead />
             <ObtnRegisterBody />
 

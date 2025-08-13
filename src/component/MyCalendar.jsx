@@ -89,7 +89,7 @@ export const MyCalendar = (props) => {
         if(obtnList.length > 0) {
 
             const dateCell = document.querySelector(`[data-date="${todayStr}"]`);
-            console.log(dateCell)
+            // console.log(dateCell)
             dateCell.click();
         }
 

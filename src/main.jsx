@@ -5,16 +5,20 @@ import { Provider } from "react-redux";
 import './index.css'
 import App from './App.jsx'
 import store from './store.js';
-// import 'ag-grid-community/styles/ag-grid.css';
 
+// import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
+// import 'ag-grid-community/styles/ag-grid.css';
+// import 'ag-grid-community/styles/ag-theme-balham.css';
 //tabulator기본테마
 // import 'ag-grid-community/styles/ag-theme-alpine.css';
 // tabulator예: 다크 테마
-import 'tabulator-tables/dist/css/tabulator_midnight.min.css';
+// import 'tabulator-tables/dist/css/tabulator_midnight.min.css';
+
 //tabulator
 // import 'tabulator-tables/dist/css/tabulator.min.css';
-import "react-tabulator/lib/styles.css";       // 기본 스타일
-import "react-tabulator/css/tabulator.min.css"; // 테마 스타일 (필요 시)
+// import "react-tabulator/lib/styles.css";       // 기본 스타일
+// import "react-tabulator/css/tabulator.min.css"; // 테마 스타일 (필요 시)
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 // AG Grid 필수 모듈 등록
 ModuleRegistry.registerModules([AllCommunityModule]);
