@@ -5,10 +5,12 @@ export const ObtnList_columnDefs = [
         headerCheckboxSelection: true,
         checkboxSelection: (params) => {
             // 소계 또는 합계 행은 체크박스 비활성화
-            return !(params.data?.isSubtotal || params.data?.isTotal);
+     
+            return !(params.data?.isSubtotal);
         },
         width: 40,
         pinned: 'left',
+
     },
     {
         field: 'No',

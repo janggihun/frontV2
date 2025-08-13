@@ -8,8 +8,7 @@ export const ListTable = (props) => {
     //부모에게 받은 데이터
     const originList = props.originList;
 
-    const columnDefs = ObtnList_columnDefs;
-    const categoryList = columnDefs.map(col => col.field).filter(field => field !== undefined);
+    const categoryList = ObtnList_columnDefs.map(col => col.field).filter(field => field !== undefined);
     // console.log(categoryList)
 
     //상태 변환 데이터
@@ -45,6 +44,7 @@ export const ListTable = (props) => {
     //거래처 눌러서 sort변경시 제랜더
     useEffect(() => {
 
+        if(category === "0")return;
         setRenderList(processDataWithSubtotals(originList, category, sortOrder));
 
     }, [sortOrder, category, originList])
@@ -58,13 +58,17 @@ export const ListTable = (props) => {
         }
     };
     const onRowClicked = (e) => {
-        if (e.data?.isSubtotal || e.data?.isTotal) {
-            return; // 클릭 무시
-        }
+        // 체크박스 클릭이면 동작 안함
+        if (e.event.target.closest('.ag-checkbox-input')) return;
 
-        const isSelected = e.node.isSelected();
-        e.node.setSelected(!isSelected); // 체크박스 선택 토글
+        // 소계/합계 행 무시
+        if (e.data?.isSubtotal ) return;
+
+
+        // 일반 행 클릭 시 선택 토글
+        e.node.setSelected(!e.node.isSelected());
     }
+
     const getRowStyle = (params) => {
         if (params.data?.isSubtotal) {
             return {backgroundColor: '#f0f8ff', fontWeight: 'bold'}; // 소계
@@ -100,6 +104,7 @@ export const ListTable = (props) => {
             rowData: params.node.data
         });
     };
+
     return (
         <>
             <div className="w-full">
@@ -116,12 +121,13 @@ export const ListTable = (props) => {
                         rowClass="custom-row-style"
                         rowHeight={45}
                         rowSelection={'multiple'}               //여러샐 동시 체크박스가능
-                        suppressRowClickSelection={true}
-                        rowData={renderList}
 
+                        rowData={renderList}
+                        columnDefs={ObtnList_columnDefs}
+                        suppressRowClickSelection={true}
                         onColumnHeaderClicked={onHeaderClick}   //열 헤더 클릭
                         animateRows={false}                     //에니매이션 중지
-                        columnDefs={columnDefs}
+
                         getRowStyle={getRowStyle}               //소계,합계 색 입히는 함수
                         onRowClicked={onRowClicked}             //행 클릭시 이벤트
                         pinnedBottomRowData={pinnedBottomRowData}   //맨아래 푸터고정
