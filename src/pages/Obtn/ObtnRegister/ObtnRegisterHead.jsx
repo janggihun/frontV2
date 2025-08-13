@@ -4,6 +4,7 @@ import { Status } from "../../../enum/enum.js";
 import { useNavigate } from "react-router-dom";
 import { InputText } from "../../../component/InputTag/inputText.jsx";
 import { useInput } from "../../../component/InputTag/useInput.jsx";
+import {InputSelectBox} from "../../../component/InputTag/InputSelectBox.jsx";
 
 export const ObtnRegisterHead = (props) => {
     const navigate = useNavigate();
@@ -23,37 +24,38 @@ export const ObtnRegisterHead = (props) => {
     const plceNm = useInput();      //장소
     const obtnMk = useInput();      //비고
     const mony = useInput();        //수주금액
-    const comp = useInput();        //회사 
+    const comp = useInput();        //회사
 
     const handleSubmit = async () => {
 
         const saveMap = {
             obtnNm: obtnNm.value,
             plceNm: plceNm.value,
-            obtnMk: obtnMk.value,
+            obtnMk: obtnMk.value, //비고
             mony: mony.value,
-            comp: comp.value
+            compId: comp.value
         };
-
+        console.log(saveMap)
         const url = "/api/v1/obtn/save";
         const res = await postAxios(url, saveMap);
 
         if (res.status === Status.SUCCESS) {
             alert(res.data);
+
             return navigate("/obtn/manager");
         }
-
-
     };
+
     useEffect(() => {
 
         const getData = async () => {
-
             const res_comp = await getCompRead();
+            //전처리
+            res_comp.forEach((el)=>{
+                el.value = el.id;
+                el.name = el.compNm;
+            })
             setCompList(res_comp)
-
-            console.log()
-
         }
         getData()
 
@@ -77,10 +79,10 @@ export const ObtnRegisterHead = (props) => {
                     <InputText label="현장명" {...plceNm} />
                 </div>
                 <div className={`flex items-center h-[${SeachBoxHeight}px]`}>
-                    <InputText label="회사명" {...comp} />
+                    <InputSelectBox label="회사명" {...comp} list={compList} />
                 </div>
                 <div className={`flex items-center h-[${SeachBoxHeight}px]`}>
-                    <InputText label="비고" {...obtnMk} />
+                    <InputText label="비고" {...obtnMk}  />
                 </div>
                 <div className={`flex items-center h-[${SeachBoxHeight}px]`}>
                     <InputText label="수주금액" {...mony} />
