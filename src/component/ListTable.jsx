@@ -167,7 +167,17 @@ export const ListTable = (props) => {
                         }}
                         onClick={() => {
                             if(!contextMenu.rowData.obtnNm) return;
-                            alert(`수주 : ${contextMenu.rowData.obtnNm} 건을 수정합니다.`);
+                            // 선택된 행이 1건이 아닐 경우 무시
+                            if (!gridRef.current) return;
+                            const selectedRows = gridRef.current.api.getSelectedRows();
+                            if (selectedRows.length !== 1) {
+                                alert('수주 수정은 1건만 선택 가능합니다.');
+                                setContextMenu({ ...contextMenu, visible: false });
+                                return;
+                            }
+                            const row = selectedRows[0];
+                            //클릭한건 전부
+                            alert(`수주 : ${row.obtnNm} 건을 수정합니다.`);
                             setContextMenu({ ...contextMenu, visible: false });
                         }}
                         onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f0f0f0')}
@@ -183,7 +193,13 @@ export const ListTable = (props) => {
                         }}
                         onClick={() => {
                             if(!contextMenu.rowData.obtnNm) return;
-                            alert(`수주 : ${contextMenu.rowData.obtnNm} 건을 삭제하시겠습니까?`);
+                            //클릭한건 전부
+                            const selectedRows = gridRef.current.api.getSelectedRows();
+                            if (selectedRows.length === 0) return;
+
+                            // 선택된 모든 행의 수주번호 가져오기
+                            const names = selectedRows.map(row => row.obtnNm).join(', ');
+                            alert(`수주 : ${names} 건을 취소 하시겠습니까?`);
                             setContextMenu({ ...contextMenu, visible: false });
                         }}
                         onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f0f0f0')}
