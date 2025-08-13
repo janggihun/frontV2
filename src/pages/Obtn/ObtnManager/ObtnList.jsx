@@ -4,6 +4,8 @@ import {ObtnSearchBox} from "./ObtnSearchBox.jsx";
 import {formatDateTime} from "../../../common/common.js";
 import {ListTable} from "../../../component/ListTable.jsx";
 import {MyCalendar} from "../../../component/MyCalendar.jsx";
+import {useDispatch} from "react-redux";
+import {closeLoading, openLoading} from "../../../store/LoadingSlice.jsx";
 
 export const ObtnList = () => {
 
@@ -11,9 +13,10 @@ export const ObtnList = () => {
     const [searchMap, setSearchMap] = useState();
     const [gridApi, setGridApi] = useState();
 
+    const dispatch = useDispatch();
     //수주 리스트 취득
     const getData = async () => {
-
+        dispatch(openLoading())
         const res_obtn = await getObtnList(searchMap)
 
         const cleanData = res_obtn.map(item => ({
@@ -22,6 +25,7 @@ export const ObtnList = () => {
             inputDate: item.inputDate ? formatDateTime(item.inputDate) : '',
             updateDate: item.updateDate ? formatDateTime(item.updateDate) : ''
         }));
+        dispatch(closeLoading())
         setObtnList(cleanData);
         //초기화
     }
