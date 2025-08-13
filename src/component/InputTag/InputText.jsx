@@ -2,7 +2,7 @@ export const InputText = ({ label, value, onChange, disabled }) => {
     return (
         <div className="flex w-full h-full">
             <label
-                className={`text-sm text-gray-700 w-24 flex items-center justify-center border border-gray-300 `}
+                className={`text-sm  w-24 flex items-center justify-center border border-gray-300  bg-gray-200 bold`}
             >
                 {label}
             </label>
