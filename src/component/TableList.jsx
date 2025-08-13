@@ -1,96 +1,103 @@
-import {useEffect, useRef, useState} from 'react';
-import {TabulatorFull as Tabulator} from 'tabulator-tables';
-import {getObtnList} from "../api/restApi.js";
-import {formatDateTime} from "../common/common.js";
+import { ReactTabulator } from "react-tabulator";
+import "react-tabulator/lib/styles.css";
 
-export const MyTable = () => {
-    const tableRef = useRef();
-
-    useEffect(() => {
-        const table = new Tabulator(tableRef.current, {
-            data: [
-                {name: '홍길동', age: 30},
-                {name: '김영희', age: 25}
-            ],
-            columns: [
-                {title: '이름', field: 'name', sorter: 'string'},
-                {title: '나이', field: 'age', sorter: 'number', bottomCalc: 'avg'}
-            ],
-            layout: 'fitColumns',
-        });
-
-        return () => table.destroy();
-    }, []);
-
-    return <div ref={tableRef}/>;
-}
-
-/*
-* 수주 테이블
-* */
 export const ObtnTable = () => {
-    const [originList, setOriginList] = useState()
-    const tableRef = useRef(null);          // DOM 컨테이너
-    const tableInstRef = useRef(null);      // Tabulator 인스턴스
+    const data = [
+        { name: "홍길동", dept: "영업", amount: 1000 },
+        { name: "이몽룡", dept: "영업", amount: 2000 },
+        { name: "성춘향", dept: "인사", amount: 1500 },
+        { name: "변학도", dept: "인사", amount: 2500 },
+        { name: "임꺽정", dept: "개발", amount: 3000 },
+    ];
 
-
-    // 1) 테이블은 한 번만 생성
-    useEffect(() => {
-        if (!tableRef.current) return;
-
-        tableInstRef.current = new Tabulator(tableRef.current, {
-            data: [],                           // 초기엔 비워두기
-            layout: 'fitColumns',
-            groupBy: "compNm", // 거래처별 그룹핑
-            groupHeader: function(value, count, data, group) {
-                // value: 그룹 값(거래처명), count: 행 개수
-                // 여기서 그룹 소계 계산 가능
-                const sum = data.reduce((acc, row) => acc + (row.mony || 0), 0);
-                return `${value} - 건수: ${count}건 / 소계: ${sum.toLocaleString()}원`;
+    const columns = [
+        { title: "이름", field: "name", width: 150 },
+        {
+            title: "부서",
+            field: "dept",
+            width: 120,
+            formatter: (cell) => {
+                const rowData = cell.getRow().getData();
+                if (rowData.isSubtotal) return ""; // 소계는 부서 비우기
+                return rowData.dept;
             },
+        },
+        {
+            title: "금액",
+            field: "amount",
+            width: 100,
+            hozAlign: "right",
+            formatter: (cell) => {
+                const rowData = cell.getRow().getData();
+                return `₩${rowData.amount.toLocaleString()}`;
+            },
+        },
+    ];
 
+    // 부서별 그룹화 + 소계
+    const groupMap = data.reduce((map, row) => {
+        if (!map[row.dept]) map[row.dept] = [];
+        map[row.dept].push(row);
+        return map;
+    }, {});
 
-
-            columns: [
-                { title: 'No', field: 'No', width: 60 },
-                { title: '수주번호', field: 'obtnNm', width: 140, sorter: 'string' },
-                { title: '수주금액', field: 'mony', width: 120, sorter: 'number', bottomCalc: 'sum' },
-                { title: '거래처', field: 'compNm', width: 160, sorter: 'string' },
-                { title: '주소', field: 'compAdr', width: 100, sorter: 'string' },
-                { title: '작성자', field: 'inputId', width: 120, sorter: 'string' },
-                { title: '작성 날짜', field: 'inputDate', width: 160, sorter: 'string' }
-            ]
+    let processedData = [];
+    Object.keys(groupMap).forEach((dept) => {
+        const rows = groupMap[dept];
+        processedData = processedData.concat(rows);
+        const subtotal = rows.reduce((sum, r) => sum + r.amount, 0);
+        processedData.push({
+            name: "소계",
+            dept: "", // 소계에서는 부서 비움
+            amount: subtotal,
+            isSubtotal: true,
         });
+    });
 
-        return () => {
-            tableInstRef.current?.destroy();
-            tableInstRef.current = null;
-        };
-    }, []);
-    // 2) 데이터 가져오기
-    useEffect(() => {
-        (async () => {
-            const res = await getObtnList();
-            const clean = res.map((item, idx) => ({
-                ...item,
-                No: idx + 1,
-                testView: '',
-                inputDate: item.inputDate ? formatDateTime(item.inputDate) : '',
-                updateDate: item.updateDate ? formatDateTime(item.updateDate) : ''
-            }));
-            setOriginList(clean);
-        })();
-    }, []);
+    const totalSum = data.reduce((sum, row) => sum + row.amount, 0);
 
-    // 3) originList 변경 시 그리드에 반영
-    useEffect(() => {
-        if (!originList || !tableInstRef.current) return;
+    // footer DOM 요소 생성
+    const footerDiv = document.createElement("div");
+    footerDiv.style.display = "flex";
+    footerDiv.style.backgroundColor = "#f5f5dc";
+    footerDiv.style.fontWeight = "bold";
+    footerDiv.style.padding = "5px";
 
-        // 기존 데이터 전부 교체 (페이징/필터 상태 유지)
-        tableInstRef.current.replaceData(originList).catch(() => {
-            // replaceData가 실패할 경우 setData로 폴백
-            tableInstRef.current?.setData(originList);
-        });
-    }, [originList]);
-    return <div ref={tableRef} style={{ width: '1000px' }}/>;
-}
+    const emptyName = document.createElement("div");
+    emptyName.style.width = "150px"; // 이름 컬럼 폭
+
+    const emptyDept = document.createElement("div");
+    emptyDept.style.width = "120px"; // 부서 컬럼 폭
+
+    const amountDiv = document.createElement("div");
+    amountDiv.style.width = "100px"; // 금액 컬럼 폭
+    amountDiv.style.textAlign = "right";
+    amountDiv.textContent = `₩${totalSum.toLocaleString()}`;
+
+    footerDiv.appendChild(emptyName);
+    footerDiv.appendChild(emptyDept);
+    footerDiv.appendChild(amountDiv);
+
+    return (
+        <>
+            <h2>자동 소계 + 전체 합계</h2>
+            <ReactTabulator
+                style={{ width: "800px", height: "300px" }}
+                data={processedData}
+                columns={columns}
+                options={{
+                    layout: "fitDataTable",
+                    rowFormatter: (row) => {
+                        const data = row.getData();
+                        if (data.isSubtotal) {
+                            row.getElement().style.backgroundColor = "#cceeff"; // 하늘색
+                            row.getElement().style.fontWeight = "bold";
+                            row.getElement().style.textAlign = "right"; // 금액 정렬
+                        }
+                    },
+                    footerElement: footerDiv,
+                }}
+            />
+        </>
+    );
+};

@@ -13,9 +13,9 @@ export const ObtnManager = () => {
             <div className="flex h-[350px] w-full">
                 <ObtnList/>
             </div>
-            <div className="h-[350px]  w-full">
-                <ObtnTable/>
-            </div>
+            {/*<div className="h-[350px]  w-full">*/}
+            {/*    <ObtnTable/>*/}
+            {/*</div>*/}
 
         </>
 

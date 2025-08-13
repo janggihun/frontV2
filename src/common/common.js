@@ -52,18 +52,19 @@ export const processDataWithSubtotals = (data, category, sortOrder) => {
 
     // ✅ 숫자 기준으로 정렬한 경우 → 소계 없이 전체 합계만
     if (isCategoryNumeric) {
-        const totalMony = sortedData.reduce((acc, cur) => acc + (Number(cur.mony) || 0), 0);
+
+        // const totalMony = sortedData.reduce((acc, cur) => acc + (Number(cur.mony) || 0), 0);
         return [
             ...sortedData.map((item, idx) => ({
                 ...item,
                 testView: idx + 1
             })),
-            {
-                [category]: '',
-                No: '전체 합계',
-                mony: totalMony,
-                isTotal: true
-            }
+            // {
+            //     [category]: '',
+            //     No: '전체 합계',
+            //     mony: totalMony,
+            //     isTotal: true
+            // }
         ];
     }
 
@@ -111,13 +112,13 @@ export const processDataWithSubtotals = (data, category, sortOrder) => {
         i++;
     });
 
-    const totalMony = sortedData.reduce((acc, cur) => acc + (Number(cur.mony) || 0), 0);
-    result.push({
-        [category]: '',
-        No: '전체 합계',
-        mony: totalMony,
-        isTotal: true
-    });
+    // const totalMony = sortedData.reduce((acc, cur) => acc + (Number(cur.mony) || 0), 0);
+    // result.push({
+    //     [category]: '',
+    //     No: '전체 합계',
+    //     mony: totalMony,
+    //     isTotal: true
+    // });
 
     return result;
 };

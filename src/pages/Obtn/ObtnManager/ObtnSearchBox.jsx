@@ -18,7 +18,7 @@ export const ObtnSearchBox = (props) => {
         compNm: ''
     };
     const clickSearchBox = () => {
-        props.setSearchMap(searchMap);
+        props.setSearchMap({...searchMap});
     }
     const onchange_obtnNm = (e) => {
         setObtnNms(e.target.value)
@@ -34,8 +34,11 @@ export const ObtnSearchBox = (props) => {
     }
 
     useEffect(()=>{
-        setStartDt( today())
-        setEndDt(today())
+       
+        searchMap.startDt = today();
+        searchMap.endDt = today();
+        clickSearchBox()
+
     },[])
     return <>  {/* 검색 조건 영역 */}
         <div style={{

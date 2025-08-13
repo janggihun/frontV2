@@ -8,7 +8,7 @@ import {MyCalendar} from "../../../component/MyCalendar.jsx";
 export const ObtnList = () => {
 
     const [obtnList, setObtnList] = useState(); //원천 데이터
-    const [searchMap, setSearchMap] = useState({});
+    const [searchMap, setSearchMap] = useState();
     const [gridApi, setGridApi] = useState();
 
     //수주 리스트 취득
@@ -30,7 +30,10 @@ export const ObtnList = () => {
     // }, []);
 
     useEffect(() => {
-        getData();
+
+         getData();
+
+
     }, [searchMap])
 
     if (obtnList) {
