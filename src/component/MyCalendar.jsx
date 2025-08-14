@@ -3,17 +3,18 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import koLocale from '@fullcalendar/core/locales/ko';
-import {getObtnList} from "../api/restApi.js";
+import {getAxios, getObtnList} from "../api/restApi.js";
 import {formatDateTime} from "../common/common.js";
+import {Status} from "../enum/enum.js";
 
 export const MyCalendar = (props) => {
     const searchMap = props.searchMap;
 
     const [currentDate, setCurrentDate] = useState(new Date());
     const [obtnList, setObtnList] = useState([]);
-
+    const [selectDt , setSelectDt] = useState()
     const calendarRef = useRef();
-    
+
     //오늘날짜
     const today = new Date();
     const year = today.getFullYear();
@@ -35,7 +36,7 @@ export const MyCalendar = (props) => {
     //찾은 날짜에 색 넣어주기
     Object.keys(valuesMap).forEach((dateStr) => {
         const dateCell = document.querySelector(`[data-date="${dateStr}"]`);
-        if(dateStr === todayStr) {
+        if (dateStr === todayStr) {
             return;
         }
         if (dateCell) {
@@ -43,31 +44,48 @@ export const MyCalendar = (props) => {
             dateCell.style.borderRadius = '6px';
         }
     });
+    //해당 달의 수주량 구하기
+    const getData = async (selectDt) => {
+        const url = "/api/v1/obtn/count-Obtn-By-Month";
+        const map = {
+            selectDt
+        }
+        const res = await getAxios(url, map);
+        if (res.status === Status.SUCCESS) {
+            const list = res.data;
 
-    useEffect(() => {
-        //오늘날짜
-        const api = calendarRef.current.getApi();
-        api.gotoDate(new Date());
-
-        //오리지널 데이터
-        const getData = async () => {
-
-            const res_obtn = await getObtnList()
-
-            const cleanData = res_obtn.map(item => ({
+            const cleanData = list.map(item => ({
                 // ...item,
                 inputDate: item.inputDate ? formatDateTime(item.inputDate) : '',
                 updateDate: item.updateDate ? formatDateTime(item.updateDate) : ''
             }));
             setObtnList(cleanData);
         }
-        getData()
+    }
+    useEffect(() => {
+        //오늘날짜
+        // const api = calendarRef.current.getApi();
+        // api.gotoDate(new Date());
+
+        //첫 시작시에는 오늘날짜로 수주량 추가
+        getData(todayStr);
+
+        const dateCell = document.querySelector(`[data-date="${todayStr}"]`);
+        console.log(dateCell)
+        // console.log(dateCell)
+        dateCell?.click();
+
 
     }, [])
-
+    useEffect(() => {
+        //지정 날짜 변동시
+        getData(selectDt);
+            
+    }, [selectDt]);
     const handleDateClick = (arg) => {
         searchMap.startDt = arg.dateStr;
         searchMap.endDt = arg.dateStr;
+        setSelectDt(searchMap.startDt)
         props.setSearchMap({...searchMap});
     };
 
@@ -86,11 +104,12 @@ export const MyCalendar = (props) => {
     };
 
     useEffect(() => {
-        if(obtnList.length > 0) {
+        if (obtnList.length > 0) {
 
             const dateCell = document.querySelector(`[data-date="${todayStr}"]`);
+
             // console.log(dateCell)
-            dateCell.click();
+            dateCell?.click();
         }
 
     }, [obtnList]);

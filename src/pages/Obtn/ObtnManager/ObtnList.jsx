@@ -14,6 +14,7 @@ export const ObtnList = () => {
     const [gridApi, setGridApi] = useState();
 
     const dispatch = useDispatch();
+
     //수주 리스트 취득
     const getData = async () => {
         dispatch(openLoading())
