@@ -1,15 +1,13 @@
 import {Status} from "../enum/enum";
 import axios from "./axiosConfig";
-import {closeLoading} from "../store/LoadingSlice.jsx";
+import {closeLoading, openLoading} from "../store/LoadingSlice.jsx";
 
 
 //디스페치
 let dispatch = null;
 
 export const getDispatch = (value)=>{
-
   dispatch = value;
-
 }
 const base = ""
 
@@ -18,7 +16,7 @@ const base = ""
 * 검색시
 */
 export const getAxios = async (url, map) => {
-
+  dispatch(openLoading())
   try {
     const res = await axios.get(base + url,  {
       params : map,
@@ -35,7 +33,7 @@ export const getAxios = async (url, map) => {
 }
 
 export const getMeAxios = async () => {
-
+  dispatch(openLoading())
   const url = "/api/v1/user/me";
   try {
     const res = await axios.get(base + url, {
@@ -53,7 +51,7 @@ export const getMeAxios = async () => {
 }
 
 export const getLogoutAxios = async () => {
-
+  dispatch(openLoading())
   const url = "/api/v1/user/logout";
   try {
     const res = await axios.get(base + url, {
@@ -73,6 +71,7 @@ export const getLogoutAxios = async () => {
 * 데이터 저장시
 */
 export const postAxios = async (url, map) => {
+  dispatch(openLoading())
   try {
     const res = await axios.post(base + url, map, {
       withCredentials: true
@@ -92,7 +91,7 @@ export const postAxios = async (url, map) => {
 * 수정시
 */
 export const patchAxios = async (url, map) => {
-
+  dispatch(openLoading())
   try {
     const res = await axios.patch(base + url, map, {
       withCredentials: true
@@ -112,7 +111,7 @@ export const patchAxios = async (url, map) => {
 * 삭제시
 */
 export const deleteAxios = async (url, map) => {
-
+  dispatch(openLoading())
   try {
     const res = await axios.delete(base + url, map, {
       withCredentials: true

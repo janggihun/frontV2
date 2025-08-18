@@ -1,4 +1,4 @@
-export const InputText = ({ label, value, onChange, disabled }) => {
+export const InputText = ({ label, value, onChange, disabled ,changeValue}) => {
     return (
         <div className="flex w-full h-full">
             <label

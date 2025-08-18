@@ -2,9 +2,10 @@ import {useEffect, useRef, useState} from "react";
 import {AgGridReact} from 'ag-grid-react';
 import {processDataWithSubtotals} from "../common/common.js";
 import {ObtnList_columnDefs} from "../pages/Obtn/ObtnManager/columnDefs.js";
+import {useNavigate} from "react-router-dom";
 
 export const ListTable = (props) => {
-
+    const navigate = useNavigate();
     //부모에게 받은 데이터
     const originList = props.originList;
 
@@ -177,7 +178,9 @@ export const ListTable = (props) => {
                             }
                             const row = selectedRows[0];
                             //클릭한건 전부
-                            alert(`수주 : ${row.obtnNm} 건을 수정합니다.`);
+                            console.log('row', row);
+                            // alert(`수주 : ${row.obtnNm} 건을 수정합니다.`);
+                            navigate(`/obtn/update/${row.id}`)
                             setContextMenu({ ...contextMenu, visible: false });
                         }}
                         onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f0f0f0')}

@@ -1,4 +1,4 @@
-export const InputSelectBox = ({ label, value, onChange, disabled, list }) => {
+export const InputSelectBox = ({ label, value, onChange, disabled, list ,changeValue}) => {
     const initialValue =  list?[0].value : '';
 
     return (
@@ -10,9 +10,10 @@ export const InputSelectBox = ({ label, value, onChange, disabled, list }) => {
             </label>
             <select className="flex-1 focus:outline-none border border-gray-300"
                     placeholder={`${label} 입력`}
-                    value={initialValue}
+                    value={value}
                     onChange={onChange}
                     disabled={disabled}
+
 
             > class="tb tb_col"
                 <option key={"selected"}  value="">{"선택"}</option>

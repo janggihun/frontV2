@@ -15,6 +15,7 @@ import {ObtnRead} from "./pages/Obtn/ObtnRead/ObtnRead.jsx";
 import {LoadingComponent} from "./component/LoadingComponent.jsx";
 import {getDispatch} from "./api/restApi.js";
 import {useDispatch} from "react-redux";
+import {ObtnUpdate} from "./pages/Obtn/ObtnUpdate/ObtnUpdate.jsx";
 
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
                         {/* 수주 */}
                         <Route path="/obtn/manager" element={<ObtnManager/>}/>
                         <Route path="/obtn/register" element={<ObtnRegister/>}/>
+                        <Route path="/obtn/update/:id" element={<ObtnUpdate/>}/>
                         <Route path="/obtn/read" element={<ObtnRead/>}/>
                         {/* 작업지시 */}
                         <Route path="/work/manager" element={<WorkManager/>}/>
