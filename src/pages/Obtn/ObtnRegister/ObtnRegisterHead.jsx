@@ -7,11 +7,13 @@ import {useInput} from "../../../component/InputTag/useInput.jsx";
 import {InputSelectBox} from "../../../component/InputTag/InputSelectBox.jsx";
 import {useDispatch} from "react-redux";
 import {closeLoading, openLoading} from "../../../store/LoadingSlice.jsx";
+import Button from '@mui/material/Button';
+import {Autocomplete, TextField} from "@mui/material";
 
 export const ObtnRegisterHead = (props) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const SeachBoxHeight = 50;
+    const SeachBoxHeight = 80;
     const [compList, setCompList] = useState()
 
     //INPUT태그
@@ -30,6 +32,7 @@ export const ObtnRegisterHead = (props) => {
             mony: mony.value,
             compId: comp.value
         };
+
         // console.log(saveMap)
         const url = "/api/v1/obtn/save";
         const res = await postAxios(url, saveMap);
@@ -48,9 +51,13 @@ export const ObtnRegisterHead = (props) => {
             dispatch(openLoading())
             const res_comp = await getCompRead();
             //전처리
+            // res_comp.forEach((el) => {
+            //     el.value = el.id;
+            //     el.name = el.compNm;
+            // })
             res_comp.forEach((el) => {
-                el.value = el.id;
-                el.name = el.compNm;
+
+                el.label = el.compNm;
             })
             setCompList(res_comp)
             dispatch(closeLoading())
@@ -62,16 +69,9 @@ export const ObtnRegisterHead = (props) => {
         <>
             <div className="w-full h-[5%] flex justify-end items-center bg-red-100">
                 <div>
-                    <button
-                        onClick={handleSubmit}
-                        className="px-4 py-2 bg-blue-600 text-white rounded"
-                    >
-                        저장하기
-                    </button>
+                    <Button variant="contained" onClick={handleSubmit}> 저장하기</Button>
                 </div>
-
             </div>
-
 
             <div className="p-4">
                 <div className="grid grid-cols-4 divide-x divide-y ">
@@ -87,19 +87,51 @@ export const ObtnRegisterHead = (props) => {
                     <div className={`flex items-center h-[${SeachBoxHeight}px]`}>
                         {/* <InputText label="수주금액" {...mony} /> */}
                     </div>
-                    <div className={`flex items-center h-[${SeachBoxHeight}px]`}>
-                        <InputSelectBox label="회사명" {...comp} list={compList}/>
-                    </div>
-                    <div className={`flex items-center h-[${SeachBoxHeight}px]`}>
-                        <InputText label="현장명" {...plceNm} />
-                    </div>
+                    {/*<div className={`flex items-center h-[${SeachBoxHeight}px]`}>*/}
+                    {/*    <InputSelectBox label="회사명" {...comp} list={compList}/>*/}
+                    {/*</div>*/}
 
-                    <div className={`flex items-center h-[${SeachBoxHeight}px]`}>
-                        <InputText label="비고" {...obtnMk}  />
-                    </div>
-                    <div className={`flex items-center h-[${SeachBoxHeight}px]`}>
-                        <InputText label="수주금액" {...mony} />
-                    </div>
+                    <Autocomplete
+                        disablePortal
+                        options={compList}
+                        sx={{width: 500}}
+                        renderInput={(params) => <TextField {...params} label="회사명"/>}
+                        onChange={(event, newValue) => {
+                            comp.changeValue(newValue.id)
+                        }}
+                    />
+                    <TextField
+                        id="outlined-required"
+                        label="현장명"
+                        sx={{width: '100%', height: "50px"}}
+
+                        // defaultValue="Hello World"
+                        onChange={(e) => {
+                            // obtnMk.onChange(e)
+                        }}
+                    />
+
+                    <TextField
+                        id="outlined-required"
+                        label="비고"
+                        sx={{width: '100%', height: "50px"}}
+
+                        // defaultValue="Hello World"
+                        onChange={(e) => {
+                            obtnMk.onChange(e)
+                        }}
+                    />
+
+                    <TextField
+                        id="outlined-required"
+                        label="수주금액"
+                        sx={{width: '100%', height: "50px"}}
+
+                        // defaultValue="Hello World"
+                        onChange={(e) => {
+                            mony.onChange(e)
+                        }}
+                    />
 
                 </div>
 

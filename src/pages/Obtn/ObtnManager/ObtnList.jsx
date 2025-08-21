@@ -24,7 +24,6 @@ export const ObtnList = () => {
             inputDate: item.inputDate ? formatDateTime(item.inputDate) : '',
             updateDate: item.updateDate ? formatDateTime(item.updateDate) : ''
         }));
-        console.log(cleanData)
         setObtnList(cleanData);
         //초기화
     }
