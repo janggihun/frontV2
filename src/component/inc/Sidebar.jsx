@@ -123,7 +123,25 @@ export const Sidebar_purchase = () => {
         </aside>
     );
 };
+export const Sidebar_comp= () => {
 
+    return (
+        <aside className="w-64 bg-gray-100 h-full p-4 shadow-md">
+            <ul className="space-y-4 mt-10">
+                <li>
+                    <button className="w-full text-left px-4 py-2 bg-white rounded-r-lg shadow">거래처 관리</button>
+                </li>
+                <li>
+                    <button className="w-full text-left px-4 py-2 bg-white rounded-r-lg shadow">거래처 등록</button>
+                </li>
+                {/* <li><button className="w-full text-left px-4 py-2 bg-white rounded-r-lg shadow"></button></li>
+        <li><button className="w-full text-left px-4 py-2 bg-white rounded-r-lg shadow">제원...</button></li>
+        <li><button className="w-full text-left px-4 py-2 bg-white rounded-r-lg shadow">제원...</button></li>
+        <li><button className="w-full text-left px-4 py-2 bg-white rounded-r-lg shadow">제원....</button></li> */}
+            </ul>
+        </aside>
+    );
+};
 export const Sidebar_work = () => {
 
     return (

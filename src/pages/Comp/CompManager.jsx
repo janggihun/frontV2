@@ -7,15 +7,15 @@ import {getAxios} from "../../api/restApi.js";
 import {Status} from "../../enum/enum.js";
 import {useNavigate} from "react-router-dom";
 
-export const BomManager = () => {
+export const CompManager = () => {
     const navigate = useNavigate();
     const gridRef = useRef(null);
     const [itemList, setItemList] = useState([]);
     const columns = [
         // {field: 'id', headerName: '', checkboxSelection: true, width: 70, headerCheckboxSelection: true},
-        {field: 'itemCd', headerName: '품목코드', width: 150, cellStyle: {textAlign: 'center'}},
-        {field: 'itemNm', headerName: '품목이름', width: 250, cellStyle: {textAlign: 'center'}},
-        {field: 'itemMony', headerName: '품목 단가', width: 90, aggFunc: 'sum'}, // Footer 합계 가능
+        {field: 'compNm', headerName: '회사이름', width: 150, cellStyle: {textAlign: 'center'}},
+        {field: 'compAdr', headerName: '주소', width: 250, cellStyle: {textAlign: 'center'}},
+        {field: 'compCd', headerName: '사업자등록번호', width: 150,  cellStyle: {textAlign: 'center'}}, // Footer 합계 가능
         // {field: 'itemMony', headerName: 'Age', width: 90, aggFunc: 'sum'}, // Footer 합계 가능
 
     ];
@@ -42,7 +42,7 @@ export const BomManager = () => {
     useEffect(() => {
         const getData = async () => {
 
-            const url = "/api/itemHdr/read"
+            const url = "/api/comp/read"
 
             const res = await getAxios(url, null)
 
@@ -55,12 +55,12 @@ export const BomManager = () => {
     }, []);
     return (
         <>
-            <MainTitle title={"* 품목 관리"}/>
+            <MainTitle title={"* 거래처 관리"}/>
             <Button variant="contained" onClick={clickCheckInfo} sx={{mt: 1}}>
                 선택된 데이터 확인
             </Button>
             <div className="p-1 w-[100%] h-[50px]  flex justify-end">
-                <Button variant="contained" onClick={()=>{navigate("/bom/register")}}>품목등록</Button>
+                <Button variant="contained" onClick={()=>{navigate("/comp/register")}}>거래처등록</Button>
             </div>
             <div className="ag-theme-alpine" style={{height: '300px', width: '100%'}}>
                 <AgGridReact

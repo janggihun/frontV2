@@ -16,6 +16,8 @@ import {LoadingComponent} from "./component/LoadingComponent.jsx";
 import {getDispatch} from "./api/restApi.js";
 import {useDispatch} from "react-redux";
 import {ObtnUpdate} from "./pages/Obtn/ObtnUpdate/ObtnUpdate.jsx";
+import {CompManager} from "./pages/Comp/CompManager.jsx";
+import {CompRegister} from "./pages/Comp/CompRegister.jsx";
 
 
 function App() {
@@ -36,6 +38,10 @@ function App() {
                     <Route element={<Layout/>}>
                         {/* 대쉬보드 */}
                         <Route path="/dashBoard/manager" element={<DashBoardManager/>}/>
+
+                        {/* 거래처관리 */}
+                        <Route path="/comp/manager" element={<CompManager/>}/>
+                        <Route path="/comp/register" element={<CompRegister/>}/>
 
                         {/* 제원관리 */}
                         <Route path="/bom/manager" element={<BomManager/>}/>

@@ -46,8 +46,8 @@ export const ListTable = (props) => {
     useEffect(() => {
 
         if(category === "0")return;
-        setRenderList(processDataWithSubtotals(originList, category, sortOrder));
-
+        // setRenderList(processDataWithSubtotals(originList, category, sortOrder));
+        setRenderList(originList)
     }, [sortOrder, category, originList])
 
     const onHeaderClick = (e) => {
@@ -131,7 +131,7 @@ export const ListTable = (props) => {
 
                         getRowStyle={getRowStyle}               //소계,합계 색 입히는 함수
                         onRowClicked={onRowClicked}             //행 클릭시 이벤트
-                        pinnedBottomRowData={pinnedBottomRowData}   //맨아래 푸터고정
+                        // pinnedBottomRowData={pinnedBottomRowData}   //맨아래 푸터고정
                         onCellContextMenu={onCellContextMenu} //우클릭
                         // getContextMenuItems={getContextMenuItems} //유료
                         // suppressContextMenu={false} // 필수        //유료

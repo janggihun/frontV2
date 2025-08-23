@@ -1,10 +1,11 @@
 import {useEffect, useState} from "react";
-import {getObtnList} from "../../../api/restApi.js";
+import {getAxios, getObtnList} from "../../../api/restApi.js";
 import {ObtnSearchBox} from "./ObtnSearchBox.jsx";
-import {formatDateTime} from "../../../common/common.js";
+import {formatDateTime, statusList} from "../../../common/common.js";
 import {ListTable} from "../../../component/ListTable.jsx";
 import {MyCalendar} from "../../../component/MyCalendar.jsx";
 import {useDispatch} from "react-redux";
+import {Status} from "../../../enum/enum.js";
 
 export const ObtnList = () => {
 
@@ -13,16 +14,41 @@ export const ObtnList = () => {
     const [gridApi, setGridApi] = useState();
 
     const dispatch = useDispatch();
+
+    const cal_remainDt = (obtnDtStr) => {
+
+        const obtnDt = new Date(obtnDtStr); // 수주 날짜
+        const today = new Date();            // 오늘 날짜
+
+// 날짜 차이 계산 (밀리초 단위)
+        const diffMs = obtnDt - today;
+
+// 밀리초 → 일수 변환
+        const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+        return ` ${diffDays}일`;
+
+    }
     //수주 리스트 취득
+
     const getData = async () => {
 
-        const res_obtn = await getObtnList(searchMap)
+        const url = "/api/obtnHdr/read";
 
-        const cleanData = res_obtn.map(item => ({
+        const res_obtn = await getAxios(url);
+        console.log(res_obtn)
+        if (res_obtn.status !== Status.SUCCESS) {
+            return alert("통신 오류");
+        }
+        const obtns = res_obtn.data;
+        const cleanData = obtns.map(item => ({
             ...item,
             testView: '',
-            inputDate: item.inputDate ? formatDateTime(item.inputDate) : '',
-            updateDate: item.updateDate ? formatDateTime(item.updateDate) : ''
+            status: statusList.find(el => el.eng === item.status).kor,
+            compNm: item.compHdr.compNm,
+            compAdr: item.compHdr.compAdr,
+            remainDt : cal_remainDt(item.obtnDt),
+            rgstDt: item.rgstDt ? formatDateTime(item.rgstDt) : '',
+            updtDt: item.updtDt ? formatDateTime(item.updtDt) : ''
         }));
         setObtnList(cleanData);
         //초기화
@@ -32,9 +58,8 @@ export const ObtnList = () => {
     // }, []);
 
     useEffect(() => {
-         getData();
+        getData();
     }, [searchMap])
-
 
 
     if (obtnList) {
@@ -42,7 +67,7 @@ export const ObtnList = () => {
             <>
                 <div className="w-[350px]">
                     {/* 캘린더 */}
-                    <MyCalendar  searchMap={searchMap}  setSearchMap={setSearchMap}/>
+                    <MyCalendar searchMap={searchMap} setSearchMap={setSearchMap}/>
                 </div>
 
                 <div className="w-[2%]"></div>

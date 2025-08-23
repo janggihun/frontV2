@@ -25,7 +25,7 @@ export const Header = () => {
   const currentPath = window.location.pathname;
 
   return (
-    <header className="w-full h-[50px] bg-gray-800 text-white flex items-center px-6 shadow justify-between relative z-30">
+      <header className="w-full h-[50px] bg-gray-800 text-white flex items-center px-6 shadow justify-between z-30">
       {/* 가운데 정렬용 nav */}
       <nav className="absolute left-1/2 transform -translate-x-1/2 flex gap-8">
         {headerList.map((el, index) => {
@@ -55,5 +55,6 @@ export const Header = () => {
         </button>
       </div>
     </header>
+
   );
 };

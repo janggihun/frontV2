@@ -76,8 +76,10 @@ export const postAxios = async (url, map) => {
     const res = await axios.post(base + url, map, {
       withCredentials: true
     });
+
     return res.data
   } catch (error) {
+
     alert(error.response.data.data)
 
   }finally {
@@ -133,17 +135,12 @@ export const deleteAxios = async (url, map) => {
 
 export const getCompRead = async () => {
 
-  const url = "/api/v1/comp/read";
+  const url = "/api/comp/read";
   const res = await getAxios(url);
 
   return res.data
 }
 
 export const getObtnList = async (searchMap) => {
-  const url = "/api/v1/obtn/read";
 
-  const res = await getAxios(url, searchMap);
-  if (res.status === Status.SUCCESS) {
-    return res.data;
-  }
 };

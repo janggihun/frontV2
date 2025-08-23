@@ -122,3 +122,22 @@ export const processDataWithSubtotals = (data, category, sortOrder) => {
 
     return result;
 };
+export const getRowStyle = (params) => {
+    if (params.data?.isSubtotal) {
+        return {backgroundColor: '#f0f8ff', fontWeight: 'bold'}; // 소계
+    }
+
+    if (params.node.rowPinned === 'bottom') {
+        return {background: '#FFDAB9', fontWeight: 'bold'}; // 복숭아색
+    }
+
+    return null;
+}
+
+export const statusList = [
+    {eng: "TEMP_SAVE" , kor : "임시 저장"},
+    {eng: "FORM_COMPLETED" , kor : "양호"},
+    {eng: "CANCEL" , kor : "취소"},
+
+
+]

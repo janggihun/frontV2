@@ -1,6 +1,6 @@
 import {
     Sidebar_admin,
-    Sidebar_bom,
+    Sidebar_bom, Sidebar_comp,
     Sidebar_dashBoard,
     Sidebar_obtn,
     Sidebar_purchase,
@@ -11,6 +11,7 @@ import {
 
 export const headerList = [
     { url: "/dashBoard", label: "대쉬보드", clickUrl: "/dashBoard/manager" , comp : <Sidebar_dashBoard/>},
+    { url: "/comp", label: "거래처관리", clickUrl: "/comp/manager" , comp : <Sidebar_comp/>},
     { url: "/bom", label: "품목관리", clickUrl: "/bom/manager" ,comp : <Sidebar_bom/>},
     { url: "/obtn", label: "영업관리", clickUrl: "/obtn/manager" ,comp : <Sidebar_obtn/>},
     { url: "/work", label: "작업지시", clickUrl: "/work/manager", comp : <Sidebar_work/> },

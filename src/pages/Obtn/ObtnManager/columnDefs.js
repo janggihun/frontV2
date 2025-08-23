@@ -12,9 +12,26 @@ export const ObtnList_columnDefs = [
         pinned: 'left',
     },
     {
-        field: 'No',
+        field: 'obtnNm',
         width: 110,
-        headerName: 'No',
+        headerName: '수주번호',
+        cellStyle: { textAlign: 'center' },
+
+    },
+    // {
+    //     field: 'No',
+    //     width: 110,
+    //     headerName: 'No',
+    //     cellStyle: { textAlign: 'center' },
+    //
+    //     cellRenderer: (params) => {
+    //         return params.value;
+    //     },
+    // },
+    {
+        field: 'remainDt',
+        width: 110,
+        headerName: '남은기일',
         cellStyle: { textAlign: 'center' },
 
         cellRenderer: (params) => {
@@ -22,16 +39,20 @@ export const ObtnList_columnDefs = [
         },
     },
     {
-        field: 'obtnNm',
+        field: 'status',
         width: 110,
-        headerName: '수주번호',
+        headerName: '상태',
         cellStyle: { textAlign: 'center' },
 
+        cellRenderer: (params) => {
+            return params.value;
+        },
     },
+
     {
-        field: 'mony',
+        field: 'stx',
         width: 110,
-        headerName: '수주금액',
+        headerName: '부가세',
         cellStyle: { textAlign: 'right' },
 
         valueFormatter: params => {
@@ -56,14 +77,14 @@ export const ObtnList_columnDefs = [
 
     },
     {
-        field: 'inputId',
+        field: 'rgstNm',
         width: 100,
         headerName: '작성자',
         cellStyle: { textAlign: 'center' },
 
     },
     {
-        field: 'inputDate',
+        field: 'rgstDt',
         width: 200,
         headerName: '작성 날짜',
         cellStyle: { textAlign: 'center' },
@@ -85,14 +106,14 @@ export const ObtnList_columnDefs = [
         }
     },
     {
-        field: 'updateId',
+        field: 'updtNm',
         width: 100,
         headerName: '수정자',
         cellStyle: { textAlign: 'center' },
 
     },
     {
-        field: 'updateDate',
+        field: 'updtDt',
         width: 200,
         headerName: '수정 날짜',
         cellStyle: { textAlign: 'center' },
