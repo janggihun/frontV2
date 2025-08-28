@@ -6,13 +6,14 @@ import {ListTable} from "../../../component/ListTable.jsx";
 import {MyCalendar} from "../../../component/MyCalendar.jsx";
 import {useDispatch} from "react-redux";
 import {Status} from "../../../enum/enum.js";
+import {ObtnDtlList} from "./ObtnDtlList.jsx";
 
 export const ObtnList = () => {
 
     const [obtnList, setObtnList] = useState(); //원천 데이터
     const [searchMap, setSearchMap] = useState();
     const [gridApi, setGridApi] = useState();
-
+    const [obtn, setObtn] = useState();
     const dispatch = useDispatch();
 
     const cal_remainDt = (obtnDtStr) => {
@@ -35,7 +36,7 @@ export const ObtnList = () => {
         const url = "/api/obtnHdr/read";
 
         const res_obtn = await getAxios(url);
-        console.log(res_obtn)
+
         if (res_obtn.status !== Status.SUCCESS) {
             return alert("통신 오류");
         }
@@ -65,20 +66,39 @@ export const ObtnList = () => {
     if (obtnList) {
         return (
             <>
-                <div className="w-[350px]">
-                    {/* 캘린더 */}
-                    <MyCalendar searchMap={searchMap} setSearchMap={setSearchMap}/>
+                <div  className="w-[100%] h-[100%]">
+                    <div className="flex w-[100%] h-[100%]">
+                        <div className="w-[25%]">
+                            {/* 캘린더 */}
+                            <MyCalendar searchMap={searchMap} setSearchMap={setSearchMap}/>
+                        </div>
+
+                        <div className="w-[2%]"></div>
+                        <div className="w-full">
+                            {/* 검색조건 */}
+                            <ObtnSearchBox obtnList={obtnList} setSearchMap={setSearchMap} searchMap={searchMap}
+                                           gridApi={gridApi}/>
+                            {/* 데이터 테이블 */}
+                            <ListTable originList={obtnList} setObtn={setObtn} searchMap={searchMap} setGridApi={setGridApi}/>
+
+                        </div>
+                    </div>
+
+                    <div  className="flex w-[100%] h-[100%]">
+                        <div className="w-[25%]">
+                            {/* 캘린더 */}
+                            {/*<MyCalendar searchMap={searchMap} setSearchMap={setSearchMap}/>*/}
+                        </div>
+
+                        <div className="w-[2%]"></div>
+                        <div className="w-full">
+                            {/* obtnDtl 테이블 */}
+                            <ObtnDtlList obtn={obtn} />
+                        </div>
+                    </div>
                 </div>
 
-                <div className="w-[2%]"></div>
-                <div className="w-[78%]">
-                    {/* 검색조건 */}
-                    <ObtnSearchBox obtnList={obtnList} setSearchMap={setSearchMap} searchMap={searchMap}
-                                   gridApi={gridApi}/>
-                    {/* 데이터 테이블 */}
-                    <ListTable originList={obtnList} searchMap={searchMap} setGridApi={setGridApi}/>
 
-                </div>
             </>
         );
 

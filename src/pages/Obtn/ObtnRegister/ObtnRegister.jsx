@@ -7,8 +7,10 @@ import {Box, MenuItem, TextField} from "@mui/material";
 import {useInput} from "../../../component/InputTag/useInput.jsx";
 import {getAxios, postAxios} from "../../../api/restApi.js";
 import {Status} from "../../../enum/enum.js";
+import {useNavigate} from "react-router-dom";
 
 export const ObtnRegister = () => {
+    const navigate = useNavigate();
     const obtnDtlGrid = useRef(null);
 
     const [obtnDtls, setObtnDtls] = useState([]);
@@ -30,12 +32,15 @@ export const ObtnRegister = () => {
             obtnMk: obtnMk.value,
             obtnDt: obtnDt.value ? new Date(obtnDt.value).toISOString().slice(0, 19) : null
         }
-        console.log("저장할 데이터:", saveMap);
+        // console.log("저장할 데이터:", saveMap);
         const url = "/api/obtnHdr/save";
 
         const res = await postAxios(url, saveMap);
 
-        console.log(res)
+        if(res.status === Status.SUCCESS) {
+            navigate("/obtn/manager")
+        }
+        // console.log(res)
 
     };
     // 행 추가
@@ -455,7 +460,7 @@ export const ObtnRegister = () => {
 
     // 초기 행 하나 생성
     useEffect(() => {
-        createObtnDtl();
+        // createObtnDtl();
     }, []);
     useEffect(() => {
         const getData = async () => {
@@ -482,7 +487,7 @@ export const ObtnRegister = () => {
                 </Button>
             </div>
             {/*수주시작*/}
-            <div className="w-full p-2 flex gap-2">
+            <div className="w-full p-1 flex gap-2">
                 {/* 회사명 */}
                 <div className="flex w-1/4 shadow-sm g overflow-hidden">
                     {/* 왼쪽 라벨 */}
@@ -550,12 +555,12 @@ export const ObtnRegister = () => {
                     </div>
                 </div>
                 {/* 공란*/}
-                <div className="flex w-1/4 shadow-sm  overflow-hidden">
+                <div className="flex w-1/4 overflow-hidden">
                   
                 </div>
             </div>
 
-            <div className="w-full p-2 flex gap-2">
+            <div className="w-full p-1 flex gap-2">
                 {/* 수주비고 */}
                 <div className="flex w-1/2 shadow-sm  overflow-hidden">
                     <div className="w-1/4 flex items-center justify-center bg-gray-200">

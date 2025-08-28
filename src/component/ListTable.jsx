@@ -37,15 +37,15 @@ export const ListTable = (props) => {
 
     //우클릭시
     useEffect(() => {
-        const handleClick = () => setContextMenu({ ...contextMenu, visible: false });
+        const handleClick = () => setContextMenu({...contextMenu, visible: false});
         window.addEventListener('click', handleClick);
         return () => window.removeEventListener('click', handleClick);
     }, [contextMenu]);
-    
+
     //거래처 눌러서 sort변경시 제랜더
     useEffect(() => {
 
-        if(category === "0")return;
+        if (category === "0") return;
         // setRenderList(processDataWithSubtotals(originList, category, sortOrder));
         setRenderList(originList)
     }, [sortOrder, category, originList])
@@ -61,13 +61,20 @@ export const ListTable = (props) => {
     const onRowClicked = (e) => {
         // 체크박스 클릭이면 동작 안함
         if (e.event.target.closest('.ag-checkbox-input')) return;
-
         // 소계/합계 행 무시
-        if (e.data?.isSubtotal ) return;
-
-
+        if (e.data?.isSubtotal) return;
         // 일반 행 클릭 시 선택 토글
         e.node.setSelected(!e.node.isSelected());
+        // console.log(e.node)
+        //현재 클릭된 리스트를 넣어줘야한다.
+        // 선택된 행 RowNode (index 포함)
+        const selectedNodes = gridRef.current.api.getSelectedNodes();
+        if (selectedNodes.length === 0) {
+            props.setObtn(null);
+        } else {
+            props.setObtn(selectedNodes[0].data);
+        }
+
     }
 
     const getRowStyle = (params) => {
@@ -121,7 +128,7 @@ export const ListTable = (props) => {
                         ref={gridRef}
                         rowClass="custom-row-style"
                         rowHeight={45}
-                        rowSelection={'multiple'}               //여러샐 동시 체크박스가능
+                        rowSelection={'single'}               //여러샐 동시 체크박스가능
 
                         rowData={renderList}
                         columnDefs={ObtnList_columnDefs}
@@ -156,6 +163,7 @@ export const ListTable = (props) => {
                         padding: '4px 0',
                         zIndex: 1000,
                         minWidth: '160px',
+
                         fontFamily: 'Arial, sans-serif',
                         fontSize: '14px',
                     }}
@@ -167,13 +175,13 @@ export const ListTable = (props) => {
                             transition: 'background 0.2s',
                         }}
                         onClick={() => {
-                            if(!contextMenu.rowData.obtnNm) return;
+                            if (!contextMenu.rowData.obtnNm) return;
                             // 선택된 행이 1건이 아닐 경우 무시
                             if (!gridRef.current) return;
                             const selectedRows = gridRef.current.api.getSelectedRows();
                             if (selectedRows.length !== 1) {
                                 alert('수주 수정은 1건만 선택 가능합니다.');
-                                setContextMenu({ ...contextMenu, visible: false });
+                                setContextMenu({...contextMenu, visible: false});
                                 return;
                             }
                             const row = selectedRows[0];
@@ -181,7 +189,7 @@ export const ListTable = (props) => {
                             console.log('row', row);
                             // alert(`수주 : ${row.obtnNm} 건을 수정합니다.`);
                             navigate(`/obtn/update/${row.id}`)
-                            setContextMenu({ ...contextMenu, visible: false });
+                            setContextMenu({...contextMenu, visible: false});
                         }}
                         onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f0f0f0')}
                         onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
@@ -195,7 +203,7 @@ export const ListTable = (props) => {
                             transition: 'background 0.2s',
                         }}
                         onClick={() => {
-                            if(!contextMenu.rowData.obtnNm) return;
+                            if (!contextMenu.rowData.obtnNm) return;
                             //클릭한건 전부
                             const selectedRows = gridRef.current.api.getSelectedRows();
                             if (selectedRows.length === 0) return;
@@ -203,7 +211,7 @@ export const ListTable = (props) => {
                             // 선택된 모든 행의 수주번호 가져오기
                             const names = selectedRows.map(row => row.obtnNm).join(', ');
                             alert(`수주 : ${names} 건을 취소 하시겠습니까?`);
-                            setContextMenu({ ...contextMenu, visible: false });
+                            setContextMenu({...contextMenu, visible: false});
                         }}
                         onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f0f0f0')}
                         onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}

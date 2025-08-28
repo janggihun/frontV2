@@ -24,7 +24,7 @@ export const getAxios = async (url, map) => {
     });
     return res.data;
   } catch (error) {
-    // console.log(error)
+    console.log(error)
     alert(error.response.data.data)
 
   }finally {
