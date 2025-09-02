@@ -24,4 +24,4 @@ npx tailwindcss init -p
 
 
 벡엔드 시작시 필요
-
+ npm install -D tailwindcss postcss autoprefixer
